@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "728675062371-98jvr83oa54tl52o0nsr8d0k6mrkjieh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carmark.carmark",
+            "certificate_hash": "b0ea41f5e6874d7854fab0c469abb4c67293c500"
+          }
+        },
+        {
           "client_id": "728675062371-m6km5rdar6rb3g2ucje6odvsum69mnp7.apps.googleusercontent.com",
           "client_type": 3
         }

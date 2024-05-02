@@ -1,9 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carmark/controller/carosel-controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:carmark/view/category_page.dart';
 import 'package:carmark/view/signin_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+import '../controller/get-user-data-controller.dart';
+import '../controller/google-sign-in.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,7 +21,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GoogleController googleSignInController = GoogleController();
+  final GetUserDataController _getUserDataController =
+      Get.put(GetUserDataController());
+
+  late final User user;
+  late List<QueryDocumentSnapshot<Object?>> userData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser!;
+    _getUserData();
+  }
+
+  Future<void> _getUserData() async {
+    userData = await _getUserDataController.getUserData(user.uid);
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   final List<String> images = ['images/Cybertruck.jpg', 'images/Model3.jpg'];
+
+  //Creating object for caroselcontroller to get carosel images from firestore
+  CaroselController caroselController = Get.put(CaroselController());
+  int currentindex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +79,13 @@ class _HomePageState extends State<HomePage> {
               children: [
                 CircleAvatar(
                   radius: 90.r,
-                  backgroundImage: AssetImage('images/smilingperson.jpg'),
+                  backgroundImage: NetworkImage(
+                    userData.isNotEmpty &&
+                            userData[0]['userImg'] != null &&
+                            userData[0]['userImg'].isNotEmpty
+                        ? userData[0]['userImg']
+                        : 'https://via.placeholder.com/150', // Placeholder URL for testing
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0).r,
@@ -101,88 +140,45 @@ class _HomePageState extends State<HomePage> {
           centerTitle: true,
         ),
         body: Column(children: [
-          CarouselSlider(
-            items: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(0.0, 2.0),
-                      blurRadius: 6.0,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    'images/lambo1.jpg',
-                    height: 100.h,
-                    width: 125.w,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(0.0, 2.0),
-                      blurRadius: 6.0,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    'images/lambo2.jpg',
-                    height: 100.h,
-                    width: 125.w,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(0.0, 2.0),
-                      blurRadius: 6.0,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    'images/lambo3.jpg',
-                    height: 100.h,
-                    width: 125.w,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ],
-            options: CarouselOptions(
-              height: 375.h,
-              scrollDirection: Axis.horizontal,
-              disableCenter: true,
-              enableInfiniteScroll: false,
-            ),
+
+          Obx(
+            () {
+              if (caroselController.caroselImages.isEmpty) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                return CarouselSlider.builder(
+                  itemCount: caroselController.caroselImages.length,
+                  itemBuilder:
+                      (BuildContext context, int index, int realIndex) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.network(
+                        caroselController.caroselImages[index],
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  },
+                  options: CarouselOptions(
+                      height: 375.h,
+                      scrollDirection: Axis.horizontal,
+                      disableCenter: true,
+                      autoPlay: true),
+                );
+              }
+            },
           ),
+
           Padding(
             padding: const EdgeInsets.all(10.0).r,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text("Best Sellers",style: TextStyle(
-                  fontWeight: FontWeight.bold,
-
-                ),),
+                Text(
+                  "Best Sellers",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),
@@ -202,12 +198,10 @@ class _HomePageState extends State<HomePage> {
                     images[index],
                     fit: BoxFit.cover,
                   ),
-
                 );
               },
             ),
           ),
-          Text("Tesla CyberTruck")
         ]));
   }
 }

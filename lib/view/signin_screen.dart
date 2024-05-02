@@ -1,8 +1,10 @@
+import 'package:carmark/controller/google-sign-in.dart';
 import 'package:flutter/material.dart';
 import 'package:carmark/view/forgot_pass.dart';
 import 'package:carmark/view/signup_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:get/get.dart';
 
 class Signin extends StatefulWidget {
   const Signin({super.key});
@@ -16,6 +18,7 @@ class _SigninState extends State<Signin> {
   var useredit = TextEditingController();
   var passedit = TextEditingController();
   final onekey = GlobalKey<FormState>();
+  GoogleController googleController=Get.put(GoogleController());
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +122,11 @@ class _SigninState extends State<Signin> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(onPressed: () {}, child: Text("Sign In")),
+                    ElevatedButton(onPressed: () {
+                      setState(() {
+                        googleController.signInWithGoogle();
+                      });
+                    }, child: Text("Sign In")),
                   ],
                 ),
                 Padding(
@@ -129,6 +136,9 @@ class _SigninState extends State<Signin> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SignInButton(Buttons.GoogleDark, onPressed: () {
+                        setState(() {
+                          googleController.signInWithGoogle();
+                        });
 
                       }),
                     ],

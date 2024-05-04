@@ -9,6 +9,8 @@ import 'package:carmark/view/category_page.dart';
 import 'package:carmark/view/signin_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../controller/get-user-data-controller.dart';
 import '../controller/google-sign-in.dart';
@@ -23,7 +25,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GoogleController googleSignInController = GoogleController();
   final GetUserDataController _getUserDataController =
-      Get.put(GetUserDataController());
+  Get.put(GetUserDataController());
 
   late final User user;
   late List<QueryDocumentSnapshot<Object?>> userData = [];
@@ -81,8 +83,8 @@ class _HomePageState extends State<HomePage> {
                   radius: 90.r,
                   backgroundImage: NetworkImage(
                     userData.isNotEmpty &&
-                            userData[0]['userImg'] != null &&
-                            userData[0]['userImg'].isNotEmpty
+                        userData[0]['userImg'] != null &&
+                        userData[0]['userImg'].isNotEmpty
                         ? userData[0]['userImg']
                         : 'https://via.placeholder.com/150', // Placeholder URL for testing
                   ),
@@ -142,7 +144,7 @@ class _HomePageState extends State<HomePage> {
         body: Column(children: [
 
           Obx(
-            () {
+                () {
               if (caroselController.caroselImages.isEmpty) {
                 return Center(child: CircularProgressIndicator());
               } else {
@@ -152,10 +154,11 @@ class _HomePageState extends State<HomePage> {
                       (BuildContext context, int index, int realIndex) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Image.network(
-                        caroselController.caroselImages[index],
-                        fit: BoxFit.cover,
-                      ),
+
+                          child: Image.network(
+                            caroselController.caroselImages[index],
+                            fit: BoxFit.cover,
+                          ),
                     );
                   },
                   options: CarouselOptions(
@@ -169,14 +172,17 @@ class _HomePageState extends State<HomePage> {
           ),
 
           Padding(
-            padding: const EdgeInsets.all(10.0).r,
+            padding: const EdgeInsets.all(15.0).r,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
+
               children: [
                 Text(
-                  "Best Sellers",
+                  "Brands",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
+                    fontSize: 20,
+
                   ),
                 ),
               ],

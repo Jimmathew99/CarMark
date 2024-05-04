@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:carmark/view/forgot_pass.dart';
 import 'package:carmark/view/signup_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:get/get.dart';
+import 'package:sign_button/constants.dart';
+import 'package:sign_button/create_button.dart';
 
 class Signin extends StatefulWidget {
   const Signin({super.key});
@@ -123,9 +124,7 @@ class _SigninState extends State<Signin> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(onPressed: () {
-                      setState(() {
-                        googleController.signInWithGoogle();
-                      });
+
                     }, child: Text("Sign In")),
                   ],
                 ),
@@ -135,12 +134,14 @@ class _SigninState extends State<Signin> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      SignInButton(Buttons.GoogleDark, onPressed: () {
-                        setState(() {
-                          googleController.signInWithGoogle();
-                        });
-
-                      }),
+                      SignInButton(
+                          buttonType: ButtonType.google,
+                          buttonSize: ButtonSize.medium, // small(default), medium, large
+                          onPressed: () {
+                            setState(() {
+                              googleController.signInWithGoogle();
+                            });
+                          })
                     ],
                   ),
                 ),

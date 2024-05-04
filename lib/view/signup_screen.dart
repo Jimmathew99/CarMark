@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:carmark/view/signin_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+import '../controller/email-controller.dart';
+import '../controller/google-sign-in.dart';
+import 'email-validation-screen.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -9,23 +14,25 @@ class Signup extends StatefulWidget {
   State<Signup> createState() => _SignupState();
 }
 
-
 class _SignupState extends State<Signup> {
   bool _ispasswordvisible = true;
   var emailedit = TextEditingController();
   var passedit = TextEditingController();
-  var nameedit=TextEditingController();
+  var nameedit = TextEditingController();
   final onekey = GlobalKey<FormState>();
-  var emailpattern=RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$');
-  var namepattern=RegExp(r'^[a-zA-Z]+ [a-zA-Z]+$');
-  var passpattern=RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~])[a-zA-Z\d!@#$%^&*()_+{}\[\]:;<>,.?~]{8,12}$');
+  var emailpattern = RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$');
+  var namepattern = RegExp(r'^[a-zA-Z]+ [a-zA-Z]+$');
+  var passpattern = RegExp(
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~])[a-zA-Z\d!@#$%^&*()_+{}\[\]:;<>,.?~]{8,12}$');
+  final GoogleController _googleSignInController = Get.put(GoogleController());
+  final EmailController _emailPassController = Get.put(EmailController());
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(),
       body: Form(
+        key: onekey,
         child: Column(
           children: [
             Row(
@@ -58,15 +65,13 @@ class _SignupState extends State<Signup> {
             Padding(
               padding: const EdgeInsets.all(10.0).r,
               child: Card(
-                key: onekey,
                 elevation: 10,
                 child: TextFormField(
                   controller: nameedit,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return ("Please enter name");
-                    }
-                    else if(!namepattern.hasMatch(value)){
+                    } else if (!namepattern.hasMatch(value)) {
                       return 'Please enter first and last name';
                     }
                     return null;
@@ -88,8 +93,7 @@ class _SignupState extends State<Signup> {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return ("Please enter email");
-                    }
-                    else if(!emailpattern.hasMatch(value)){
+                    } else if (!emailpattern.hasMatch(value)) {
                       return 'Please enter valid email';
                     }
                     return null;
@@ -111,8 +115,7 @@ class _SignupState extends State<Signup> {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return ("Please enter a password");
-                    }
-                    else if(!passpattern.hasMatch(value)){
+                    } else if (!passpattern.hasMatch(value)) {
                       return 'Please enter a password thats 8-12 characters with'
                           'one uppercase letter,special character and number';
                     }
@@ -124,20 +127,19 @@ class _SignupState extends State<Signup> {
                     prefixIcon: Icon(Icons.account_circle),
                     suffixIcon: _ispasswordvisible
                         ? IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _ispasswordvisible = !_ispasswordvisible;
-                          });
-                        },
-                        icon: Icon(Icons.visibility))
+                            onPressed: () {
+                              setState(() {
+                                _ispasswordvisible = !_ispasswordvisible;
+                              });
+                            },
+                            icon: Icon(Icons.visibility))
                         : IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _ispasswordvisible = !_ispasswordvisible;
-                          });
-                        },
-                        icon: Icon(Icons.visibility_off)),
-
+                            onPressed: () {
+                              setState(() {
+                                _ispasswordvisible = !_ispasswordvisible;
+                              });
+                            },
+                            icon: Icon(Icons.visibility_off)),
                   ),
                   obscureText: _ispasswordvisible,
                   keyboardType: TextInputType.visiblePassword,
@@ -150,13 +152,34 @@ class _SignupState extends State<Signup> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ElevatedButton(onPressed: () {
-                    if (onekey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text("Success")));
-                    }
-
-                  }, child: Text("Sign up")),
+                  ElevatedButton(
+                      onPressed: () async {
+                        if (onekey.currentState!.validate()) {
+                          _emailPassController.updateLoading();
+                          try {
+                            await _emailPassController.signupUser(
+                              emailedit.text,
+                              passedit.text,
+                              nameedit.text,
+                            );
+                            if (_emailPassController.currentUser != null) {
+                              Get.off(
+                                  () => EmailValidationScreen(
+                                      user: _emailPassController.currentUser!),
+                                  transition: Transition.leftToRightWithFade);
+                            } else {
+                              // No user is currently authenticated
+                              Get.snackbar(
+                                  'No user is', 'currently authenticated');
+                            }
+                          } catch (e) {
+                            Get.snackbar('Error', e.toString());
+                          } finally {
+                            _emailPassController.updateLoading();
+                          }
+                        }
+                      },
+                      child: Text("Sign up")),
                 ],
               ),
             ),

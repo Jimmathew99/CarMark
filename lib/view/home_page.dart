@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carmark/controller/carosel-controller.dart';
 import 'package:carmark/controller/image-controller.dart';
+import 'package:carmark/view/orders_page.dart';
+import 'package:carmark/view/settings_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +17,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../controller/get-user-data-controller.dart';
 import '../controller/google-sign-in.dart';
+import 'favorites_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -55,32 +58,66 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(items: [
-          BottomNavigationBarItem(
-
-
-              icon: Icon(
-                Icons.home_filled,
-              ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_filled),
+              label: "Home",
               backgroundColor: Colors.white30,
-              label: "Home"),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: "Favorites",
+              backgroundColor: Colors.white30,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart),
+              label: "Orders",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: "Settings",
+            ),
+          ],
+          onTap: (int index) {
+            // Handle navigation based on the tapped index
+            switch (index) {
+              case 0:
+              // Navigate to the Home screen
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                      (route) => false,
+                );
+                break;
+              case 1:
+              // Navigate to the Favorites screen
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => FavoritesScreen()),
+                      (route) => false,
+                );
+                break;
+              case 2:
+              // Navigate to the Orders screen
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => OrdersPage()),
+                      (route) => false,
+                );
+                break;
+              case 3:
+              // Navigate to the Settings screen
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                      (route) => false,
+                );
+                break;
+            }
+          },
+        ),
 
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.favorite,
-
-              ),
-
-              backgroundColor: Colors.black,
-              label: "Favorites"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), label: "Orders"),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.settings,
-              ),
-              label: "Settings"),
-        ]),
         drawer: Drawer(
           elevation: 10,
           child: SafeArea(
@@ -117,13 +154,10 @@ class _HomePageState extends State<HomePage> {
                       Icons.logout,
                       color: Colors.red,
                     ),
-                    onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Signin(),
-                          ));
-                    },
+                      onTap: () async {
+                        await googleSignInController.signOutGoogle();
+                        print("*************** Logged out **************************************");
+                      },
                   ),
                 ),
                 Padding(
@@ -196,32 +230,99 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            Obx(
-                  () {
-                if (imageController.BrandImages.isEmpty) {
-                  return Center(child: CircularProgressIndicator());
-                } else {
-                  return CarouselSlider.builder(
-                    itemCount: imageController.BrandImages.length,
-                    itemBuilder:
-                        (BuildContext context, int index, int realIndex) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-
-                        child: Image.network(
-                          imageController.BrandImages[index],
-                          fit: BoxFit.cover,
-                        ),
+            Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      // Handle onTap for the first image
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => CategoryScreen(),),
+                            (route) => false,
                       );
                     },
-                    options: CarouselOptions(
-                        height: 60.h,
-                        scrollDirection: Axis.horizontal,
-                        disableCenter: true,),
-                  );
-                }
-              },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0).r,
+                      child: Card(
+                        elevation: 10,
+                        child: Container(
+                          height: 60.h,
+                          child: Obx(() {
+                            if (imageController.BrandImages.isEmpty) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              return ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: imageController.BrandImages.length ~/ 2, // Display half of the images
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Image.network(
+                                      imageController.BrandImages[index],
+                                      fit: BoxFit.cover,
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          }),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      // Handle onTap for the second image
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => CategoryScreen(),),
+                            (route) => false,
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0).r,
+                      child: Card(
+                        elevation: 10,
+
+                        child: Container(
+                          height: 60.h,
+                          child: Obx(() {
+                            if (imageController.BrandImages.isEmpty) {
+                              return Center(child: CircularProgressIndicator());
+                            } else {
+                              final startingIndex = imageController.BrandImages.length ~/ 2;
+                              return ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: imageController.BrandImages.length ~/ 2, // Display remaining images
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Image.network(
+                                      imageController.BrandImages[startingIndex + index],
+                                      fit: BoxFit.cover,
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          }),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
+
+
+
+
+
+
+
 
 
 

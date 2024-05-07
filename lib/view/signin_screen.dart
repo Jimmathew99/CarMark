@@ -1,4 +1,6 @@
 import 'package:carmark/controller/google-sign-in.dart';
+import 'package:carmark/view/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carmark/view/forgot_pass.dart';
 import 'package:carmark/view/signup_screen.dart';
@@ -6,6 +8,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:sign_button/constants.dart';
 import 'package:sign_button/create_button.dart';
+
+import '../controller/email-controller.dart';
 
 class Signin extends StatefulWidget {
   const Signin({super.key});
@@ -20,6 +24,7 @@ class _SigninState extends State<Signin> {
   var passedit = TextEditingController();
   final onekey = GlobalKey<FormState>();
   GoogleController googleController=Get.put(GoogleController());
+  EmailController emailController = Get.put(EmailController());
 
   @override
   Widget build(BuildContext context) {
@@ -119,14 +124,38 @@ class _SigninState extends State<Signin> {
                         child: Text("Forgot password?")),
                   ],
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(onPressed: () {
-
-                    }, child: Text("Sign In")),
-                  ],
+                SizedBox(
+                  width: 160.w,
+                  height: 40.h,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (onekey.currentState!.validate()) {
+                        emailController.updateLoading();
+                        try {
+                          UserCredential? userCredential =
+                          await emailController.signinUser(
+                            useredit.text,
+                            passedit.text,
+                          );
+                          if (userCredential != null &&
+                              userCredential.user!.emailVerified) {
+                            final user = userCredential.user;
+                            Get.offAll(() => const HomePage(),
+                                transition: Transition.leftToRightWithFade);
+                          }
+                        } catch (e) {
+                          print(e);
+                          Get.snackbar('Error', emailController.errorMessage);
+                        } finally {
+                          emailController.updateLoading();
+                        }
+                      } else {
+                        // Display the error message in a snackbar if there is one
+                        Get.snackbar('Error', emailController.errorMessage);
+                      }
+                    },
+                    child: Text("Sign in"),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(10.0).r,

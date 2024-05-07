@@ -1,7 +1,10 @@
+import 'package:carmark/view/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carmark/view/welcome_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -12,6 +15,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  User? user = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([
@@ -25,9 +29,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _navigateToNextScreen() async {
 
-    await Future.delayed(Duration(seconds: 7));
+    await Future.delayed(Duration(seconds: 7), () {
+      logInCheck(context);
+    },);
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => WelcomeScreen(),), (route) => false);
 
+  }
+
+  Future logInCheck(BuildContext context) async {
+    if (user != null) {
+      Get.offAll(() => const HomePage(), transition: Transition.cupertino);
+    } else {
+      Get.offAll(() => const WelcomeScreen(), transition: Transition.cupertino);
+    }
   }
 
   Widget build(BuildContext context) {

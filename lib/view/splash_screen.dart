@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:carmark/view/welcome_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,32 +14,39 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  User? user = FirebaseAuth.instance.currentUser;
+  late User? user;
+
   @override
   void initState() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-
-    ]);
     super.initState();
-    _navigateToNextScreen();
-  }
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
 
-  Future<void> _navigateToNextScreen() async {
-
-    await Future.delayed(Duration(seconds: 7), () {
+    // Delay for 7 seconds before checking login status
+    Future.delayed(const Duration(seconds: 7), () {
       logInCheck(context);
-    },);
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => WelcomeScreen(),), (route) => false);
-
+    });
   }
 
-  Future logInCheck(BuildContext context) async {
+  Future<void> logInCheck(BuildContext context) async {
+    // Get current user
+    user = FirebaseAuth.instance.currentUser;
+
+    // Check if user is logged in
     if (user != null) {
-      Get.offAll(() => const HomePage(), transition: Transition.cupertino);
+      // User is logged in, navigate to HomeScreen
+      await Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
     } else {
-      Get.offAll(() => const WelcomeScreen(), transition: Transition.cupertino);
+      // User is not logged in, navigate to LoginScreen
+      await Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+      );
     }
   }
 
@@ -48,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,

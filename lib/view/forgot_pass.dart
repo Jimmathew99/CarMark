@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carmark/view/signup_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+
+import '../controller/email-controller.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -10,9 +14,11 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  var emailedit = TextEditingController();
-  final onekey = GlobalKey<FormState>();
+
+  final forgotkey = GlobalKey<FormState>();
+  var emailController=TextEditingController();
   var emailpattern = RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$');
+  final EmailController _emailController = Get.put(EmailController());
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +26,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Form(
-          key: onekey,
+          key: forgotkey,
           child: Column(
             children: [
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -38,16 +44,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
               Padding(
                 padding: const EdgeInsets.all(15.0).r,
-                child: Card(
-                  elevation: 10,
+                child: SizedBox(
+                  height: 80.h,
+                  width: 200.w,
                   child: Text("Enter the email associated with your account."
                       " A reset link will be "
                       "sent to this email."),
                 ),
               ),
               SizedBox(
-                height: 100.h,
-                width: 5.w,
+                height: 50.h,
               ),
               Card(
                 elevation: 10,
@@ -61,10 +67,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       }
                       return null;
                     }
-                    ;
+
                   },
-                  controller: emailedit,
-                  decoration: InputDecoration(
+                  controller: emailController,
+                  decoration: const InputDecoration(
                     label: Text("Email"),
                     prefixIcon: Icon(Icons.person),
                     border: OutlineInputBorder(),
@@ -73,19 +79,25 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
               Padding(
                 padding: const EdgeInsets.all(15.0).r,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          if (onekey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Success")));
-                          }
-                        },
-                        child: Text("Continue")),
-                  ],
+                child: SizedBox(
+                  width: 270.w,
+                  height: 40.h,
+                  child: ElevatedButton(onPressed: () {
+                    if (forgotkey.currentState!.validate()) {
+                      String forgotEmail = emailController.text.trim();
+
+                      if (forgotEmail.isEmpty) {
+                        Get.snackbar(
+                          "Error",
+                          "Please enter all details",
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      }
+                      else {
+                        _emailController.forgotPassword(forgotEmail);
+                      }
+                    }
+                  }, child: const Text("Submit")),
                 ),
               ),
               Padding(
@@ -93,16 +105,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text("Dont have an account?"),
+                    const Text("Don't have an account?"),
                     TextButton(
                         onPressed: () {
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Signup(),
+                                builder: (context) => const Signup(),
                               ));
                         },
-                        child: Text("Sign up")),
+                        child: const Text("Sign up")),
                   ],
                 ),
               ),

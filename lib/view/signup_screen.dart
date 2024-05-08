@@ -35,7 +35,7 @@ class _SignupState extends State<Signup> {
         key: onekey,
         child: Column(
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
@@ -47,7 +47,7 @@ class _SignupState extends State<Signup> {
                 )
               ],
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
@@ -76,7 +76,7 @@ class _SignupState extends State<Signup> {
                     }
                     return null;
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     label: Text("Name"),
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.account_circle),
@@ -98,7 +98,7 @@ class _SignupState extends State<Signup> {
                     }
                     return null;
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     label: Text("Email"),
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.email_outlined),
@@ -122,9 +122,9 @@ class _SignupState extends State<Signup> {
                     return null;
                   },
                   decoration: InputDecoration(
-                    label: Text("Password"),
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.account_circle),
+                    label: const Text("Password"),
+                    border: const OutlineInputBorder(),
+                    prefixIcon: const Icon(Icons.account_circle),
                     suffixIcon: _ispasswordvisible
                         ? IconButton(
                             onPressed: () {
@@ -132,14 +132,14 @@ class _SignupState extends State<Signup> {
                                 _ispasswordvisible = !_ispasswordvisible;
                               });
                             },
-                            icon: Icon(Icons.visibility))
+                            icon: const Icon(Icons.visibility))
                         : IconButton(
                             onPressed: () {
                               setState(() {
                                 _ispasswordvisible = !_ispasswordvisible;
                               });
                             },
-                            icon: Icon(Icons.visibility_off)),
+                            icon: const Icon(Icons.visibility_off)),
                   ),
                   obscureText: _ispasswordvisible,
                   keyboardType: TextInputType.visiblePassword,
@@ -179,7 +179,7 @@ class _SignupState extends State<Signup> {
                           }
                         }
                       },
-                      child: Text("Sign up")),
+                      child: const Text("Sign up")),
                 ],
               ),
             ),
@@ -188,16 +188,16 @@ class _SignupState extends State<Signup> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text("Already have an account?"),
+                  const Text("Already have an account?"),
                   TextButton(
                       onPressed: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Signin(),
+                              builder: (context) => const Signin(),
                             ));
                       },
-                      child: Text("Sign in")),
+                      child: const Text("Sign in")),
                 ],
               ),
             ),

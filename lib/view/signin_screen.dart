@@ -35,7 +35,7 @@ class _SigninState extends State<Signin> {
             child: Column(
               key: onekey,
               children: [
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Welcome Back !",
@@ -46,7 +46,7 @@ class _SigninState extends State<Signin> {
                         )),
                   ],
                 ),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -65,11 +65,11 @@ class _SigninState extends State<Signin> {
                   elevation: 10,
                   child: TextFormField(
                     controller: useredit,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.normal,
                       decoration: TextDecoration.none,
                     ),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       label: Text("Username"),
                       border: OutlineInputBorder(),
                       suffixIcon: Icon(Icons.account_circle_outlined),
@@ -83,13 +83,13 @@ class _SigninState extends State<Signin> {
                   elevation: 10,
                   child: TextFormField(
                     controller: passedit,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.normal,
                       decoration: TextDecoration.none,
                     ),
                     decoration: InputDecoration(
-                      label: Text("Password"),
-                      border: OutlineInputBorder(),
+                      label: const Text("Password"),
+                      border: const OutlineInputBorder(),
                       suffixIcon: _ispasswordvisible
                           ? IconButton(
                               onPressed: () {
@@ -97,14 +97,14 @@ class _SigninState extends State<Signin> {
                                   _ispasswordvisible = !_ispasswordvisible;
                                 });
                               },
-                              icon: Icon(Icons.visibility))
+                              icon: const Icon(Icons.visibility))
                           : IconButton(
                               onPressed: () {
                                 setState(() {
                                   _ispasswordvisible = !_ispasswordvisible;
                                 });
                               },
-                              icon: Icon(Icons.visibility_off)),
+                              icon: const Icon(Icons.visibility_off)),
                     ),
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: _ispasswordvisible,
@@ -118,10 +118,10 @@ class _SigninState extends State<Signin> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ForgotPassword(),
+                                builder: (context) => const ForgotPassword(),
                               ));
                         },
-                        child: Text("Forgot password?")),
+                        child: const Text("Forgot password?")),
                   ],
                 ),
                 SizedBox(
@@ -154,7 +154,7 @@ class _SigninState extends State<Signin> {
                         Get.snackbar('Error', emailController.errorMessage);
                       }
                     },
-                    child: Text("Sign in"),
+                    child: const Text("Sign in"),
                   ),
                 ),
                 Padding(
@@ -179,16 +179,16 @@ class _SigninState extends State<Signin> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text("Dont have an account?"),
+                      const Text("Dont have an account?"),
                       TextButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Signup(),
+                                  builder: (context) => const Signup(),
                                 ));
                           },
-                          child: Text("Sign up")),
+                          child: const Text("Sign up")),
                     ],
                   ),
                 ),

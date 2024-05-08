@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:carmark/view/category_page.dart';
+import 'package:carmark/view/product_screen.dart';
 import 'package:carmark/view/signin_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -134,15 +134,30 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0).r,
+                  padding: const EdgeInsets.all(2.0).r,
                   child: ListTile(
                     title: Text("Order History"),
                     leading: Icon((Icons.shopping_cart)),
                     onTap: () {},
                   ),
                 ),
+
                 Padding(
-                  padding: const EdgeInsets.all(8.0).r,
+                  padding: const EdgeInsets.all(2.0).r,
+                  child: ListTile(
+                    title: Text("Products"),
+                    leading: Icon(Icons.shopping_basket_outlined),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductScreen(),
+                          ));
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(2.0).r,
                   child: ListTile(
                     title: Text(
                       "Logout",
@@ -154,26 +169,12 @@ class _HomePageState extends State<HomePage> {
                       Icons.logout,
                       color: Colors.red,
                     ),
-                      onTap: () async {
-                        await googleSignInController.signOutGoogle();
-                        print("*************** Logged out **************************************");
-                      },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0).r,
-                  child: ListTile(
-                    title: Text("Category"),
-                    leading: Icon(Icons.category),
-                    onTap: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CategoryScreen(),
-                          ));
+                    onTap: () async {
+                      await googleSignInController.signOutGoogle();
+                      print("*************** Logged out **************************************");
                     },
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -219,7 +220,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
 
                 children: [
-                  Text("Make",style: TextStyle(
+                  Text("Brand",style: TextStyle(
                     fontSize: 22,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.bold,
@@ -238,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                       // Handle onTap for the first image
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => CategoryScreen(),),
+                        MaterialPageRoute(builder: (context) => ProductScreen(),),
                             (route) => false,
                       );
                     },
@@ -278,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                       // Handle onTap for the second image
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => CategoryScreen(),),
+                        MaterialPageRoute(builder: (context) => const ProductScreen(),),
                             (route) => false,
                       );
                     },

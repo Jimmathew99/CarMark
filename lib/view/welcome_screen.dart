@@ -32,10 +32,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Signin(),
+                        builder: (context) => const Signin(),
                       ));
                 },
-                child: Text('Sign In'),
+                child: const Text('Sign In'),
               ),
             ),
             Positioned(
@@ -43,9 +43,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               bottom: 20.0,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Signup(),));
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => const Signup(),));
                 },
-                child: Text('Sign Up'),
+                child: const Text('Sign Up'),
               ),
             ),
           ],

@@ -23,6 +23,9 @@ class _SigninState extends State<Signin> {
   var useredit = TextEditingController();
   var passedit = TextEditingController();
   final onekey = GlobalKey<FormState>();
+  var userpattern = RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$');
+  var passwordpattern = RegExp(
+      r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~])[a-zA-Z\d!@#$%^&*()_+{}\[\]:;<>,.?~]{8,12}$');
   GoogleController googleController=Get.put(GoogleController());
   EmailController emailController = Get.put(EmailController());
 
@@ -65,6 +68,14 @@ class _SigninState extends State<Signin> {
                   elevation: 10,
                   child: TextFormField(
                     controller: useredit,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return ("Please enter email");
+                      } else if (!userpattern.hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
                     style: const TextStyle(
                       fontWeight: FontWeight.normal,
                       decoration: TextDecoration.none,
@@ -82,6 +93,15 @@ class _SigninState extends State<Signin> {
                 Card(
                   elevation: 10,
                   child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return ("Please enter a password");
+                      } else if (!passwordpattern.hasMatch(value)) {
+                        return 'Please enter a password thats 8-12 characters with'
+                            'one uppercase letter,special character and number';
+                      }
+                      return null;
+                    },
                     controller: passedit,
                     style: const TextStyle(
                       fontWeight: FontWeight.normal,

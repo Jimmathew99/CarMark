@@ -98,36 +98,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10.0).r,
-              child: Card(
-                elevation: 10,
-                shape: OutlineInputBorder(),
-                child: ListTile(
-                  shape: OutlineInputBorder(),
-                  leading: Icon(
-                    Icons.login_outlined,
-                    color: Colors.red,
-                  ),
-                  title: Text(
-                    "Logout",
-                    style: TextStyle(
-                      color: Colors.red,
-                    ),
-                  ),
-                  trailing: Icon(
-                    Icons.arrow_right_alt,
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfileScreen(),
-                        ));
-                  },
-                ),
-              ),
-            ),
+
           ],
         ));
   }

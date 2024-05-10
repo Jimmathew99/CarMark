@@ -68,14 +68,14 @@ class _SigninState extends State<Signin> {
                   elevation: 10,
                   child: TextFormField(
                     controller: useredit,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return ("Please enter email");
-                      } else if (!userpattern.hasMatch(value)) {
-                        return 'Please enter a valid email';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return ("Please enter email");
+                    //   } else if (!userpattern.hasMatch(value)) {
+                    //     return 'Please enter a valid email';
+                    //   }
+                    //   return null;
+                    // },
                     style: const TextStyle(
                       fontWeight: FontWeight.normal,
                       decoration: TextDecoration.none,
@@ -93,15 +93,15 @@ class _SigninState extends State<Signin> {
                 Card(
                   elevation: 10,
                   child: TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return ("Please enter a password");
-                      } else if (!passwordpattern.hasMatch(value)) {
-                        return 'Please enter a password thats 8-12 characters with'
-                            'one uppercase letter,special character and number';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value!.isEmpty) {
+                    //     return ("Please enter a password");
+                    //   } else if (!passwordpattern.hasMatch(value)) {
+                    //     return 'Please enter a password thats 8-12 characters with'
+                    //         'one uppercase letter,special character and number';
+                    //   }
+                    //   return null;
+                    // },
                     controller: passedit,
                     style: const TextStyle(
                       fontWeight: FontWeight.normal,

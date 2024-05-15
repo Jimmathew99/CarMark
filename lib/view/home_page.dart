@@ -85,34 +85,34 @@ class _HomePageState extends State<HomePage> {
             switch (index) {
               case 0:
               // Navigate to the Home screen
-                Navigator.pushAndRemoveUntil(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => HomePage()),
-                      (route) => false,
+
                 );
                 break;
               case 1:
               // Navigate to the Favorites screen
-                Navigator.pushAndRemoveUntil(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => FavoritesScreen()),
-                      (route) => false,
+
                 );
                 break;
               case 2:
               // Navigate to the Orders screen
-                Navigator.pushAndRemoveUntil(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => OrdersPage()),
-                      (route) => false,
+
                 );
                 break;
               case 3:
               // Navigate to the Settings screen
-                Navigator.pushAndRemoveUntil(
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SettingsPage()),
-                      (route) => false,
+
                 );
                 break;
             }

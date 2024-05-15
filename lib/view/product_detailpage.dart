@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -74,7 +75,57 @@ class ProductDetailScreen extends StatelessWidget {
                 );
               }).toList(),
             ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // SizedBox(
+                //   height: 70.h,
+                //   width: 150.w,
+                //   child: ElevatedButton(
+                //     style: ElevatedButton.styleFrom(
+                //       backgroundColor:
+                //       Colors.yellow.shade900, // Change the color here
+                //     ),
+                //     onPressed: () {
+                //       // Add to cart functionality
+                //     },
+                //     child: Text(
+                //       'Add to Cart',
+                //       style: TextStyle(color: Colors.white),
+                //     ),
+                //   ),
+                // ),
+                SizedBox(
+                  height: 70.h,
+                  width: 150.w,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                      Colors.green.shade700, // Change the color here
+                    ),
+                    onPressed: () {
+                      addToCart(productData);
+                    },
+                    child: Text(
+                      'Buy Now',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ]),
         ));
+  }
+
+  // Function to add product to cart
+  void addToCart(Map<String, dynamic> productData) {
+    CollectionReference cartCollection =
+    FirebaseFirestore.instance.collection('cart');
+    cartCollection.add(productData);
+    // You can add additional functionality here, such as showing a snackbar confirming the addition to cart
   }
 }

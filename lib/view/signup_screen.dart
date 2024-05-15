@@ -148,39 +148,37 @@ class _SignupState extends State<Signup> {
             ),
             Padding(
               padding: const EdgeInsets.all(10.0).r,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ElevatedButton(
-                      onPressed: () async {
-                        if (onekey.currentState!.validate()) {
-                          _emailPassController.updateLoading();
-                          try {
-                            await _emailPassController.signupUser(
-                              emailedit.text,
-                              passedit.text,
-                              nameedit.text,
-                            );
-                            if (_emailPassController.currentUser != null) {
-                              Get.off(
-                                  () => EmailValidationScreen(
-                                      user: _emailPassController.currentUser!),
-                                  transition: Transition.leftToRightWithFade);
-                            } else {
-                              // No user is currently authenticated
-                              Get.snackbar(
-                                  'No user is', 'currently authenticated');
-                            }
-                          } catch (e) {
-                            Get.snackbar('Error', e.toString());
-                          } finally {
-                            _emailPassController.updateLoading();
+              child: SizedBox(
+                width: 160.w,
+                height: 40.h,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      if (onekey.currentState!.validate()) {
+                        _emailPassController.updateLoading();
+                        try {
+                          await _emailPassController.signupUser(
+                            emailedit.text,
+                            passedit.text,
+                            nameedit.text,
+                          );
+                          if (_emailPassController.currentUser != null) {
+                            Get.off(
+                                () => EmailValidationScreen(
+                                    user: _emailPassController.currentUser!),
+                                transition: Transition.leftToRightWithFade);
+                          } else {
+                            // No user is currently authenticated
+                            Get.snackbar(
+                                'No user is', 'currently authenticated');
                           }
+                        } catch (e) {
+                          Get.snackbar('Error', e.toString());
+                        } finally {
+                          _emailPassController.updateLoading();
                         }
-                      },
-                      child: const Text("Sign up")),
-                ],
+                      }
+                    },
+                    child: const Text("Sign up")),
               ),
             ),
             Padding(

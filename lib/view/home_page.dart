@@ -139,7 +139,14 @@ class _HomePageState extends State<HomePage> {
                   child: ListTile(
                     title: Text("Order History"),
                     leading: Icon((Icons.shopping_cart)),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => OrdersPage()),
+
+                      );
+
+                    },
                   ),
                 ),
 

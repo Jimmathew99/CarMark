@@ -41,14 +41,14 @@ class ProductDetailScreen extends StatelessWidget {
               'Price: \$${productData['price'] ?? ''}',
               style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text('Fuel Type: ${productData['fueltype'] ?? ''}'),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text('Transmission: ${productData['transmission'] ?? ''}'),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             Text('Mileage: ${productData['mileage'] ?? ''}'),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             Wrap(
               spacing: 5.w,

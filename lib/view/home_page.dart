@@ -211,6 +211,7 @@ class _HomePageState extends State<HomePage> {
                     },
                     options: CarouselOptions(
                         height: 375.h,
+
                         scrollDirection: Axis.horizontal,
                         disableCenter: true,
                         autoPlay: true),

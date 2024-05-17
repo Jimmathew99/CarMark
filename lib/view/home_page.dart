@@ -30,7 +30,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GoogleController googleSignInController = GoogleController();
   final GetUserDataController _getUserDataController =
-  Get.put(GetUserDataController());
+      Get.put(GetUserDataController());
 
   late final User user;
   late List<QueryDocumentSnapshot<Object?>> userData = [];
@@ -49,12 +49,11 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
   //Creating object for caroselcontroller to get carosel images from firestore
   CaroselController caroselController = Get.put(CaroselController());
   int currentindex = 0;
-  ImageController imageController=Get.put(ImageController());
-  int imageindex=0;
+  ImageController imageController = Get.put(ImageController());
+  int imageindex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -84,41 +83,36 @@ class _HomePageState extends State<HomePage> {
             // Handle navigation based on the tapped index
             switch (index) {
               case 0:
-              // Navigate to the Home screen
+                // Navigate to the Home screen
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => HomePage()),
-
                 );
                 break;
               case 1:
-              // Navigate to the Favorites screen
+                // Navigate to the Favorites screen
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => FavoritesScreen()),
-
                 );
                 break;
               case 2:
-              // Navigate to the Orders screen
+                // Navigate to the Orders screen
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => OrdersPage()),
-
                 );
                 break;
               case 3:
-              // Navigate to the Settings screen
+                // Navigate to the Settings screen
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SettingsPage()),
-
                 );
                 break;
             }
           },
         ),
-
         drawer: Drawer(
           elevation: 10,
           child: SafeArea(
@@ -128,8 +122,8 @@ class _HomePageState extends State<HomePage> {
                   radius: 90.r,
                   backgroundImage: NetworkImage(
                     userData.isNotEmpty &&
-                        userData[0]['userImg'] != null &&
-                        userData[0]['userImg'].isNotEmpty
+                            userData[0]['userImg'] != null &&
+                            userData[0]['userImg'].isNotEmpty
                         ? userData[0]['userImg']
                         : 'https://via.placeholder.com/150', // Placeholder URL for testing
                   ),
@@ -139,10 +133,11 @@ class _HomePageState extends State<HomePage> {
                   child: ListTile(
                     title: Text("Order History"),
                     leading: Icon((Icons.shopping_cart)),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const OrdersPage(),));
+                    },
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.all(2.0).r,
                   child: ListTile(
@@ -172,7 +167,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onTap: () async {
                       await googleSignInController.signOutGoogle();
-                      print("*************** Logged out **************************************");
+                      print(
+                          "*************** Logged out **************************************");
                     },
                   ),
                 ),
@@ -186,11 +182,10 @@ class _HomePageState extends State<HomePage> {
         ),
         body: SingleChildScrollView(
           child: Column(children: [
-
             Obx(
-                  () {
+              () {
                 if (caroselController.caroselImages.isEmpty) {
-                  return  Shimmer.fromColors(
+                  return Shimmer.fromColors(
                     child: CircularProgressIndicator(),
                     baseColor: Colors.grey,
                     highlightColor: Colors.black38,
@@ -202,7 +197,6 @@ class _HomePageState extends State<HomePage> {
                         (BuildContext context, int index, int realIndex) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
-
                         child: Image.network(
                           caroselController.caroselImages[index],
                           fit: BoxFit.cover,
@@ -210,8 +204,7 @@ class _HomePageState extends State<HomePage> {
                       );
                     },
                     options: CarouselOptions(
-                        height: 375.h,
-
+                        height: 290.h,
                         scrollDirection: Axis.horizontal,
                         disableCenter: true,
                         autoPlay: true),
@@ -219,21 +212,19 @@ class _HomePageState extends State<HomePage> {
                 }
               },
             ),
-
             Padding(
               padding: const EdgeInsets.all(20.0).r,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
-
                 children: [
-                  Text("Brand",style: TextStyle(
-                    fontSize: 22,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
-
-
-
-                  ),)
+                  Text(
+                    "Brand",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
                 ],
               ),
             ),
@@ -245,8 +236,10 @@ class _HomePageState extends State<HomePage> {
                       // Handle onTap for the first image
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => ProductScreen(),),
-                            (route) => false,
+                        MaterialPageRoute(
+                          builder: (context) => ProductScreen(),
+                        ),
+                        (route) => false,
                       );
                     },
                     child: Padding(
@@ -259,16 +252,20 @@ class _HomePageState extends State<HomePage> {
                           } else {
                             return ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: imageController.BrandImages.length, // Display half of the images
+                              itemCount: imageController.BrandImages.length,
+                              // Display half of the images
                               itemBuilder: (BuildContext context, int index) {
-                                String selectedBrandName = imageController.brandNames[index]; // Accessing brandNames RxList
+                                String selectedBrandName =
+                                    imageController.brandNames[
+                                        index]; // Accessing brandNames RxList
 
                                 return InkWell(
                                   onTap: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ProductListPage(brand: selectedBrandName),
+                                        builder: (context) => ProductListPage(
+                                            brand: selectedBrandName),
                                       ),
                                     );
                                   },
@@ -334,17 +331,6 @@ class _HomePageState extends State<HomePage> {
                 // ),
               ],
             ),
-
-
-
-
-
-
-
-
-
-
-
           ]),
         ));
   }

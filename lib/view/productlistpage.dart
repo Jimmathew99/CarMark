@@ -34,7 +34,7 @@ class ProductListPage extends StatelessWidget {
                 crossAxisCount: 2,
                 crossAxisSpacing: 5.0,
                 mainAxisSpacing: 5.0,
-                childAspectRatio: 0.9
+                childAspectRatio: 0.9,
             ),
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {

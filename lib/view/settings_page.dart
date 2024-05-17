@@ -1,3 +1,5 @@
+import 'package:carmark/view/about_page.dart';
+import 'package:carmark/view/notifications_page.dart';
 import 'package:flutter/material.dart';
 import 'package:carmark/view/profile_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -52,7 +54,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProfileScreen(),
+                          builder: (context) => AboutPage(),
                         ));
                   },
                 ),
@@ -72,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProfileScreen(),
+                          builder: (context) => NotificationsPage(),
                         ));
                   },
                 ),

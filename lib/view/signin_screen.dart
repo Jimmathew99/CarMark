@@ -35,8 +35,8 @@ class _SigninState extends State<Signin> {
         appBar: AppBar(),
         body: SingleChildScrollView(
           child: Form(
+            key: onekey,
             child: Column(
-              key: onekey,
               children: [
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -112,19 +112,19 @@ class _SigninState extends State<Signin> {
                       border: const OutlineInputBorder(),
                       suffixIcon: _ispasswordvisible
                           ? IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _ispasswordvisible = !_ispasswordvisible;
-                                });
-                              },
-                              icon: const Icon(Icons.visibility))
+                          onPressed: () {
+                            setState(() {
+                              _ispasswordvisible = !_ispasswordvisible;
+                            });
+                          },
+                          icon: const Icon(Icons.visibility))
                           : IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _ispasswordvisible = !_ispasswordvisible;
-                                });
-                              },
-                              icon: const Icon(Icons.visibility_off)),
+                          onPressed: () {
+                            setState(() {
+                              _ispasswordvisible = !_ispasswordvisible;
+                            });
+                          },
+                          icon: const Icon(Icons.visibility_off)),
                     ),
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: _ispasswordvisible,

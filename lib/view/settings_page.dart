@@ -1,5 +1,7 @@
 import 'package:carmark/view/about_page.dart';
 import 'package:carmark/view/notifications_page.dart';
+import 'package:carmark/view/support_page.dart';
+import 'package:carmark/view/upload_fire.dart';
 import 'package:flutter/material.dart';
 import 'package:carmark/view/profile_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -88,13 +90,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: ListTile(
                   shape: OutlineInputBorder(),
                   leading: Icon(Icons.help_outline),
-                  title: Text("Help and support"),
+                  title: Text("Help and Support"),
                   trailing: Icon(Icons.arrow_right_alt),
                   onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ProfileScreen(),
+                          builder: (context) => SupportPage(),
                         ));
                   },
                 ),

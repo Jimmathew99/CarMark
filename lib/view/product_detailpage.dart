@@ -1,4 +1,4 @@
-import 'package:carmark/view/payment_page.dart';
+import 'package:carmark/view/address_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -163,7 +163,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PaymentSample(),
+                          builder: (context) => AddressPage(),
                         ),
                       );
                     }

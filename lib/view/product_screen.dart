@@ -60,7 +60,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       children: [
                         // Display product image
                         Image.network(
-                          productData['image'] ?? '',
+                          productData['image1'] ?? '',
                           fit: BoxFit.cover,
                         ),
                         SizedBox(height: 10.h),

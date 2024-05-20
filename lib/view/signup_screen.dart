@@ -189,7 +189,7 @@ class _SignupState extends State<Signup> {
                   const Text("Already have an account?"),
                   TextButton(
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                               builder: (context) => const Signin(),

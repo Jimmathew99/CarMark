@@ -1,7 +1,7 @@
 import 'package:carmark/view/address_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:carousel_slider/carousel_slider.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Map<String, dynamic> productData;
@@ -17,19 +17,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool _showProductDetails = false;
   double _totalAmount = 0.0;
   bool _isBooked = false;
-  bool _isFavorite = false; // Initialize _isFavorite to false
+  bool _isFavorite = false;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      fetchFavoriteStatus();
-
-    });
-    // Fetch favorite status from Firestore
+    fetchFavoriteStatus();
   }
 
-  // Function to fetch favorite status from Firestore
   Future<void> fetchFavoriteStatus() async {
     try {
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
@@ -44,7 +39,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       }
     } catch (error) {
       print('Error fetching favorite status: $error');
-      // Handle error and set _isFavorite to false
       setState(() {
         _isFavorite = false;
       });
@@ -53,6 +47,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> imageUrls = [
+      widget.productData['image1'] ?? '',
+      widget.productData['image2'] ?? '',
+      widget.productData['image3'] ?? '',
+      widget.productData['image4'] ?? '',
+    ];
+
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Product Details'),
@@ -61,20 +64,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: [
-            // Display product image
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              color: Colors.white,
-              child: Image.network(
-                widget.productData['image'] ?? '',
-                width: MediaQuery.of(context).size.width,
-                height: 200,
-                fit: BoxFit.cover,
-              ),
-            ),
+            // Display product images in a carousel slider
+            if (imageUrls.isNotEmpty)
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 200.0,
+                  enlargeCenterPage: true,
+                  autoPlay: true,
+                  aspectRatio: 16/9,
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  enableInfiniteScroll: true,
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  viewportFraction: 0.8,
+                ),
+                items: imageUrls.map((item) => Container(
+                  child: Center(
+                      child: Image.network(
+                        item,
+                        fit: BoxFit.cover,
+                        width: 1000,
+                      )),
+                )).toList(),
+              )
+            else
+              Text('No images available'),
+
             SizedBox(height: 20),
+
             // Display product details
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,11 +101,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 IconButton(
                   onPressed: () async {
-                    // Toggle favorite status
                     setState(() {
-                      _isFavorite = !_isFavorite; // Use null check operator (!)
+                      _isFavorite = !_isFavorite;
                     });
-                    // Update Firestore document to mark as favorite
                     await FirebaseFirestore.instance
                         .collection('products')
                         .doc(widget.productData['pid'])
@@ -97,7 +111,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   },
                   icon: Icon(
                     _isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: _isFavorite?Colors.red:null,
+                    color: _isFavorite ? Colors.red : null,
                   ),
                 ),
               ],
@@ -107,9 +121,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               'Price: \$${widget.productData['price'] ?? ''}',
               style: TextStyle(fontSize: 18),
             ),
-            Text('Description: ${widget.productData['description'] ?? ''}',style: TextStyle(
-              fontSize: 14,
-            ), ),
+            Text(
+              'Description: ${widget.productData['description'] ?? ''}',
+              style: TextStyle(fontSize: 14),
+            ),
             SizedBox(height: 10),
             Text('Fuel Type: ${widget.productData['fueltype'] ?? ''}'),
             SizedBox(height: 10),
@@ -138,7 +153,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         : () async {
                       setState(() {
                         _showProductDetails = true;
-                        _isBooked = true; // Set booked to true
+                        _isBooked = true;
                       });
                       await placeOrderAndGetTotalAmount(
                           widget.productData, context);
@@ -159,7 +174,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                     onPressed: _isBooked
                         ? () async {
-                      // Navigate to payment page
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -169,7 +183,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     }
                         : null,
                     child: Text(
-                      'Payment',
+                      'Address',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -182,42 +196,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  // Function to place order and get total amount
   Future<void> placeOrderAndGetTotalAmount(
       Map<String, dynamic> productData, BuildContext context) async {
     double price = double.parse(productData['price'].toString());
-    double salesTax = 0.025; // 2.5% sales tax
+    double salesTax = 0.025;
     double totalAmount = price * (1 + salesTax);
 
     final orderCollection = FirebaseFirestore.instance.collection('orders');
 
-    // Check if the item already exists in the orders collection
     final querySnapshot =
     await orderCollection.where('pid', isEqualTo: productData['pid']).get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      // Item already exists in orders collection
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('You have already purchased this item.'),
           duration: Duration(seconds: 2),
         ),
       );
-      // Set the _showProductDetails state to false
       setState(() {
         _showProductDetails = false;
       });
     } else {
-      // Item doesn't exist, add it to the collection
       await orderCollection
           .add({...productData, 'totalAmount': totalAmount}).then((value) {
         print('Product added to orders successfully!');
         setState(() {
           _totalAmount = totalAmount;
         });
-
-        // Add a delay before showing the product card
-
         setState(() {
           _showProductDetails = true;
         });
@@ -226,7 +232,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 }
 
-// Card widget to display product details
 class ProductDetailsCard extends StatelessWidget {
   final Map<String, dynamic> productData;
   final double totalAmount;

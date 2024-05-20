@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carmark/controller/carosel-controller.dart';
 import 'package:carmark/controller/image-controller.dart';
 import 'package:carmark/view/orders_page.dart';
+import 'package:carmark/view/product_detailpage.dart';
 import 'package:carmark/view/productlistpage.dart';
 import 'package:carmark/view/settings_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -214,18 +215,14 @@ class _HomePageState extends State<HomePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(20.0).r,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Brand",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                ],
+              child: Center(
+                child: Text(
+                  "Brands",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
             Row(
@@ -287,49 +284,90 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                // Expanded(
-                //   child: InkWell(
-                //     onTap: () {
-                //       // Handle onTap for the second image
-                //       Navigator.pushAndRemoveUntil(
-                //         context,
-                //         MaterialPageRoute(builder: (context) => const ProductScreen(),),
-                //             (route) => false,
-                //       );
-                //     },
-                //     child: Padding(
-                //       padding: const EdgeInsets.all(8.0).r,
-                //       child: Card(
-                //         elevation: 10,
-                //
-                //         child: Container(
-                //           height: 60.h,
-                //           child: Obx(() {
-                //             if (imageController.BrandImages.isEmpty) {
-                //               return Center(child: CircularProgressIndicator());
-                //             } else {
-                //               final startingIndex = imageController.BrandImages.length ~/ 2;
-                //               return ListView.builder(
-                //                 scrollDirection: Axis.horizontal,
-                //                 itemCount: imageController.BrandImages.length ~/ 2, // Display remaining images
-                //                 itemBuilder: (BuildContext context, int index) {
-                //                   return Padding(
-                //                     padding: const EdgeInsets.all(8.0),
-                //                     child: Image.network(
-                //                       imageController.BrandImages[startingIndex + index],
-                //                       fit: BoxFit.cover,
-                //                     ),
-                //                   );
-                //                 },
-                //               );
-                //             }
-                //           }),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
+
               ],
+            ),
+            Center(
+              child: Text("Best Sellers",style: TextStyle(
+                fontSize: 22,fontWeight: FontWeight.bold,
+              ),),
+            ),
+            Padding(
+              padding:  EdgeInsets.only(
+                top: 35
+            ),
+              child: SizedBox(
+                width: 375,
+                height: 300,
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance.collection('products').snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+                    if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+                      return Center(child: Text('No products found.'));
+                    }
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 5.0,
+                        mainAxisSpacing: 5.0,
+                        childAspectRatio: 0.9,
+                      ),
+                      itemCount: 2,
+                      itemBuilder: (context, index) {
+                        var productData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                        return GestureDetector(
+                          onTap: () {
+                            // Navigate to detail page with product details
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProductDetailScreen(productData: productData),
+                              ),
+                            );
+                          },
+                          child: SizedBox(
+                            child: Card(
+                              color: Colors.white,
+                              elevation: 15,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Display product image
+                                  Image.network(
+                                    productData['image'] ?? '',
+                                    fit: BoxFit.cover,
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  // Display product details
+                                  ListTile(
+                                    title: Text(
+                                      '${productData['brand'] ?? ''} ${productData['model'] ?? ''}',
+                                      style: TextStyle(fontSize: 18.sp),
+                                    ),
+                                    // subtitle: Column(
+                                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                                    //   children: [
+                                    //     Text('Price: \$${productData['price'] ?? ''}'),
+                                    //   ],
+                                    // ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+
+                  },
+                ),
+              ),
             ),
           ]),
         ));

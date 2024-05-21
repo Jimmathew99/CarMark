@@ -13,7 +13,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
   bool _soundNotifications = true;
   bool _emailNotifications = false;
 
-
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
@@ -25,29 +24,39 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   void initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings(''); // Specify notification icon
-    final InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+    final DarwinInitializationSettings initializationSettingsIOS =
+    DarwinInitializationSettings(
+      onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {
+        // handle notification tapped logic here
+      },
+    );
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: (NotificationResponse response) async {
+          // handle notification tapped logic here
+        });
   }
 
   Future<void> showNotification() async {
     final AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
       'your_channel_id',
-      'Your Channel Name',
-      channelDescription: 'Your channel description',
+      'Order Notification',
+      channelDescription: 'A notification message test',
       importance: Importance.max,
       priority: Priority.high,
-      sound: _soundNotifications
-          ? RawResourceAndroidNotificationSound('notification_sound')
-          : null, // Replace 'notification_sound' with sound notification resource name (Android)
+      playSound: _soundNotifications,
     );
     final NotificationDetails platformChannelSpecifics =
     NotificationDetails(android: androidPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-        0, 'Notification Title', 'Notification Content', platformChannelSpecifics);
+        0, 'Carmark', 'A test', platformChannelSpecifics);
   }
 
   @override

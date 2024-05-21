@@ -67,7 +67,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               shape: OutlineInputBorder(),
               child: ListTile(
                 title: Text(
-                  "${userData.isNotEmpty ? userData[0]['username'] : 'N/A'}",),
+                  "${userData.isNotEmpty ? userData[0]['username'] : 'N/A'}",
+                ),
                 shape: OutlineInputBorder(),
                 leading: Icon(Icons.account_circle_outlined),
               ),
@@ -80,26 +81,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               elevation: 15,
               child: ListTile(
                 title: Text(
-                  "${userData.isNotEmpty ? userData[0]['email'] : 'N/A'}",),
+                  "${userData.isNotEmpty ? userData[0]['email'] : 'N/A'}",
+                ),
                 shape: OutlineInputBorder(),
                 leading: Icon(Icons.email),
               ),
             ),
           ),
-
-
-          ElevatedButton(onPressed: () {
-
-            setState(() {
-              final _googleSignIn=GoogleSignIn();
-
-              _googleSignIn.signOut();
-
-              googleSignInController.signOutGoogle();
-              Get.offAll(WelcomeScreen());
-            });
-
-          }, child: Text("LogOut"))
         ],
       ),
     );

@@ -81,7 +81,7 @@ class _SigninState extends State<Signin> {
                       decoration: TextDecoration.none,
                     ),
                     decoration: const InputDecoration(
-                      label: Text("Username"),
+                      label: Text("E-mail"),
                       border: OutlineInputBorder(),
                       suffixIcon: Icon(Icons.account_circle_outlined),
                     ),
@@ -202,7 +202,7 @@ class _SigninState extends State<Signin> {
                       const Text("Dont have an account?"),
                       TextButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const Signup(),

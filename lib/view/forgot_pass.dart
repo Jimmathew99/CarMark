@@ -3,7 +3,6 @@ import 'package:carmark/view/signup_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-
 import '../controller/email-controller.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -14,9 +13,8 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-
   final forgotkey = GlobalKey<FormState>();
-  var emailController=TextEditingController();
+  var emailfController = TextEditingController();
   var emailpattern = RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$');
   final EmailController _emailController = Get.put(EmailController());
 
@@ -67,9 +65,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       }
                       return null;
                     }
-
                   },
-                  controller: emailController,
+                  controller: emailfController,
                   decoration: const InputDecoration(
                     label: Text("Email"),
                     prefixIcon: Icon(Icons.person),
@@ -82,22 +79,23 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: SizedBox(
                   width: 270.w,
                   height: 40.h,
-                  child: ElevatedButton(onPressed: () {
-                    if (forgotkey.currentState!.validate()) {
-                      String forgotEmail = emailController.text.trim();
+                  child: ElevatedButton(
+                      onPressed: () {
+                        if (forgotkey.currentState!.validate()) {
+                          String forgotEmail = emailfController.text.trim();
 
-                      if (forgotEmail.isEmpty) {
-                        Get.snackbar(
-                          "Error",
-                          "Please enter all details",
-                          snackPosition: SnackPosition.BOTTOM,
-                        );
-                      }
-                      else {
-                        _emailController.forgotPassword(forgotEmail);
-                      }
-                    }
-                  }, child: const Text("Submit")),
+                          if (forgotEmail.isEmpty) {
+                            Get.snackbar(
+                              "Error",
+                              "Please enter all details",
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                          } else {
+                            _emailController.forgotPassword(forgotEmail);
+                          }
+                        }
+                      },
+                      child: const Text("Submit")),
                 ),
               ),
               Padding(

@@ -24,7 +24,10 @@ class AboutPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               Text(
-                "This app is designed to provide users with the best experience for managing their tasks efficiently. Our goal is to make your life easier by helping you stay organized and productive.",
+                "Carmark is designed to provide users with the best experience "
+                "for buying and selling cars efficiently. Our goal is to "
+                "make your life easier by helping you find the perfect "
+                "vehicle and streamline the car purchasing process.",
                 style: TextStyle(fontSize: 18),
               ),
               SizedBox(height: 40),
@@ -47,7 +50,8 @@ class AboutPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PrivacyPolicyPage()),
+                    MaterialPageRoute(
+                        builder: (context) => PrivacyPolicyPage()),
                   );
                 },
                 child: Text(
@@ -65,7 +69,8 @@ class AboutPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => TermsConditionsPage()),
+                    MaterialPageRoute(
+                        builder: (context) => TermsConditionsPage()),
                   );
                 },
                 child: Text(
@@ -80,4 +85,3 @@ class AboutPage extends StatelessWidget {
     );
   }
 }
-

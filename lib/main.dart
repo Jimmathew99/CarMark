@@ -22,12 +22,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  ScreenUtilInit(
+    return ScreenUtilInit(
       splitScreenMode: true,
       minTextAdapt: true,
       designSize: Size(360, 960),
       builder: (context, child) {
         return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+
 
             home: SplashScreen()
         );

@@ -1,4 +1,5 @@
 import 'package:carmark/view/about_page.dart';
+import 'package:carmark/view/camera_page.dart';
 import 'package:carmark/view/notifications_page.dart';
 import 'package:carmark/view/support_page.dart';
 import 'package:carmark/view/upload_fire.dart';
@@ -96,7 +97,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SupportPage(),
+                          builder: (context) => CameraScreen(),
                         ));
                   },
                 ),

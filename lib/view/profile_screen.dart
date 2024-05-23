@@ -19,7 +19,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final GoogleController googleSignInController = GoogleController();
   final GetUserDataController _getUserDataController =
-      Get.put(GetUserDataController());
+  Get.put(GetUserDataController());
 
   late final User user;
   late List<QueryDocumentSnapshot<Object?>> userData = [];
@@ -50,8 +50,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             radius: 90.r,
             backgroundImage: NetworkImage(
               userData.isNotEmpty &&
-                      userData[0]['userImg'] != null &&
-                      userData[0]['userImg'].isNotEmpty
+                  userData[0]['userImg'] != null &&
+                  userData[0]['userImg'].isNotEmpty
                   ? userData[0]['userImg']
                   : 'https://via.placeholder.com/150', // Placeholder URL for testing
             ),

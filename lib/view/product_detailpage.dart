@@ -1,8 +1,8 @@
-import 'package:carmark/view/address_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'address_page.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Map<String, dynamic> productData;
@@ -20,6 +20,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool _isBooked = false;
   bool _isFavorite = false;
   String? _userUid;
+  String? _orderId;  // Add this line
 
   @override
   void initState() {
@@ -193,7 +194,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AddressPage(),
+                          builder: (context) => AddressPage(orderId: _orderId),  // Pass orderId here
                         ),
                       );
                     }
@@ -234,16 +235,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         _showProductDetails = false;
       });
     } else {
-      await orderCollection
-          .add({...productData, 'totalAmount': totalAmount}).then((value) {
-        print('Product added to orders successfully!');
-        setState(() {
-          _totalAmount = totalAmount;
-        });
-        setState(() {
-          _showProductDetails = true;
-        });
-      }).catchError((error) => print('Error adding product to orders: $error'));
+      final docRef = await orderCollection
+          .add({...productData, 'totalAmount': totalAmount});
+
+      setState(() {
+        _totalAmount = totalAmount;
+        _orderId = docRef.id;  // Store orderId
+      });
+
+      print('Product added to orders successfully!');
+      setState(() {
+        _showProductDetails = true;
+      });
     }
   }
 }

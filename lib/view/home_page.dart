@@ -156,6 +156,16 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.all(2.0).r,
                   child: ListTile(
+                    title: Text("Address"),
+                    leading: Icon(Icons.home_outlined),
+                    onTap: () {
+
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(2.0).r,
+                  child: ListTile(
                     title: Text(
                       "Logout",
                       style: TextStyle(

@@ -1,9 +1,13 @@
+import 'package:carmark/view/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddressPage extends StatefulWidget {
-  const AddressPage({super.key});
+  final String? orderId;
+
+  const AddressPage({Key? key, this.orderId}) : super(key: key);
 
   @override
   State<AddressPage> createState() => _AddressPageState();
@@ -130,6 +134,27 @@ class _AddressPageState extends State<AddressPage> {
     return null;
   }
 
+  Future<void> saveAddress() async {
+    if (widget.orderId != null) {
+      await FirebaseFirestore.instance.collection('orders').doc(widget.orderId).update({
+        'address': {
+          'houseNo': housenoController.text,
+          'roadName': roadnameController.text,
+          'city': cityController.text,
+          'state': stateController.text,
+          'pinCode': pinCodeController.text,
+        }
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Address saved successfully')),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => PaymentPage()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -244,25 +269,21 @@ class _AddressPageState extends State<AddressPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 75),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Process data.
-                      }
-                    },
-                    child: Text("Payment"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white54,
-                      padding:
-                      EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      textStyle: TextStyle(fontSize: 16),
-                    ),
+              SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      saveAddress();
+                    }
+                  },
+                  child: Text("Save Address"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green.shade700,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    textStyle: TextStyle(fontSize: 16),
                   ),
-                ],
+                ),
               ),
             ],
           ),

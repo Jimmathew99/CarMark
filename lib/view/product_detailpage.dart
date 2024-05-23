@@ -2,6 +2,7 @@ import 'package:carmark/view/address_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Map<String, dynamic> productData;
@@ -18,18 +19,29 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   double _totalAmount = 0.0;
   bool _isBooked = false;
   bool _isFavorite = false;
+  String? _userUid;
 
   @override
   void initState() {
     super.initState();
+    fetchUserUid();
     fetchFavoriteStatus();
   }
 
+  Future<void> fetchUserUid() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    setState(() {
+      _userUid = user?.uid;
+    });
+  }
+
   Future<void> fetchFavoriteStatus() async {
+    if (_userUid == null) return;
+
     try {
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
-          .collection('products')
-          .doc(widget.productData['pid'])
+          .collection('is-favorite')
+          .doc('${_userUid}_${widget.productData['pid']}')
           .get();
 
       if (snapshot.exists) {
@@ -53,8 +65,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       widget.productData['image3'] ?? '',
       widget.productData['image4'] ?? '',
     ];
-
-
 
     return Scaffold(
       appBar: AppBar(
@@ -104,10 +114,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     setState(() {
                       _isFavorite = !_isFavorite;
                     });
-                    await FirebaseFirestore.instance
-                        .collection('products')
-                        .doc(widget.productData['pid'])
-                        .update({'isFavorite': _isFavorite});
+                    if (_userUid != null) {
+                      await FirebaseFirestore.instance
+                          .collection('is-favorite')
+                          .doc('${_userUid}_${widget.productData['pid']}')
+                          .set({
+                        'uid': _userUid,
+                        'pid': widget.productData['pid'],
+                        'isFavorite': _isFavorite,
+                      });
+                    }
                   },
                   icon: Icon(
                     _isFavorite ? Icons.favorite : Icons.favorite_border,

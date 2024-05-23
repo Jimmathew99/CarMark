@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                 // Navigate to the Favorites screen
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => FavoritesScreen()),
+                  MaterialPageRoute(builder: (context) => FavoritesPage()),
                 );
                 break;
               case 2:

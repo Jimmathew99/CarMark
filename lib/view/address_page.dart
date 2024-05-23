@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,8 +28,8 @@ class _PaymentSampleState extends State<AddressPage> {
     LocationPermission permission;
     isLocationEnabled = await Geolocator.isLocationServiceEnabled();
     if (!isLocationEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Location is disabled, please enable your location")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Location is disabled, please enable your location")));
       return false;
     }
     permission = await Geolocator.checkPermission();
@@ -45,8 +43,8 @@ class _PaymentSampleState extends State<AddressPage> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Location permission are permanently denied")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Location permission are permanently denied")));
       return false;
     }
     return true;
@@ -70,7 +68,7 @@ class _PaymentSampleState extends State<AddressPage> {
       Placemark place = placemarks[0];
       setState(() {
         address =
-        '${place.street}, ${place.subLocality}, ${place.postalCode}, ${place.administrativeArea},${place.name}';
+            '${place.street}, ${place.subLocality}, ${place.postalCode}, ${place.administrativeArea},${place.name}';
         pincode = place.postalCode;
         houseno = place.name;
         roadname = place.street;
@@ -170,13 +168,12 @@ class _PaymentSampleState extends State<AddressPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-
-                    },
+                    onPressed: () {},
                     child: Text("Payment"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white54,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       textStyle: TextStyle(fontSize: 16),
                     ),
                   ),

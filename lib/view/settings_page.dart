@@ -98,7 +98,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MapSample(),
+                          builder: (context) => SupportPage(),
                         ));
                   },
                 ),

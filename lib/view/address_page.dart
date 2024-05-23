@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -8,12 +6,14 @@ class AddressPage extends StatefulWidget {
   const AddressPage({super.key});
 
   @override
-  State<AddressPage> createState() => _PaymentSampleState();
+  State<AddressPage> createState() => _AddressPageState();
 }
 
-class _PaymentSampleState extends State<AddressPage> {
-  String? address, pincode, state, houseno, city, roadname;
+class _AddressPageState extends State<AddressPage> {
+  String? _address, _pincode, _state, _houseno, _city, _roadname;
   Position? _position;
+
+  final _formKey = GlobalKey<FormState>();
 
   TextEditingController pinCodeController = TextEditingController();
   TextEditingController housenoController = TextEditingController();
@@ -67,22 +67,67 @@ class _PaymentSampleState extends State<AddressPage> {
         .then((List<Placemark> placemarks) {
       Placemark place = placemarks[0];
       setState(() {
-        address =
-            '${place.street}, ${place.subLocality}, ${place.postalCode}, ${place.administrativeArea},${place.name}';
-        pincode = place.postalCode;
-        houseno = place.name;
-        roadname = place.street;
-        city = place.subLocality;
-        state = place.administrativeArea;
-        housenoController.text = houseno.toString();
-        roadnameController.text = roadname.toString();
-        cityController.text = city.toString();
-        stateController.text = state.toString();
-        pinCodeController.text = pincode.toString();
+        _address =
+        '${place.street}, ${place.subLocality}, ${place.postalCode}, ${place.administrativeArea},${place.name}';
+        _pincode = place.postalCode;
+        _houseno = place.name;
+        _roadname = place.street;
+        _city = place.subLocality;
+        _state = place.administrativeArea;
+        housenoController.text = _houseno.toString();
+        roadnameController.text = _roadname.toString();
+        cityController.text = _city.toString();
+        stateController.text = _state.toString();
+        pinCodeController.text = _pincode.toString();
       });
     }).catchError((e) {
       debugPrint(e);
     });
+  }
+
+  String? _validateHouseNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your house number';
+    } else if (!RegExp(r'^[a-zA-Z0-9\s]+$').hasMatch(value)) {
+      return 'Please enter a valid house number';
+    }
+    return null;
+  }
+
+  String? _validateRoadName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your road name or area';
+    } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+      return 'Please enter a valid road name';
+    }
+    return null;
+  }
+
+  String? _validateCity(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your city';
+    } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+      return 'Please enter a valid city name';
+    }
+    return null;
+  }
+
+  String? _validateState(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your state';
+    } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+      return 'Please enter a valid state name';
+    }
+    return null;
+  }
+
+  String? _validatePinCode(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your pincode';
+    } else if (!RegExp(r'^[0-9]{5,6}$').hasMatch(value)) {
+      return 'Please enter a valid pincode';
+    }
+    return null;
   }
 
   @override
@@ -98,54 +143,90 @@ class _PaymentSampleState extends State<AddressPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (address != null)
+              if (_address != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: Text(
-                    address!,
+                    _address!,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
               Form(
+                key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
-                      controller: housenoController,
-                      decoration: InputDecoration(
-                        labelText: "House Number",
-                        border: OutlineInputBorder(),
+                    Card(
+                      elevation: 10,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: housenoController,
+                          decoration: InputDecoration(
+                            labelText: "House Number",
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: _validateHouseNumber,
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),
-                    TextFormField(
-                      controller: roadnameController,
-                      decoration: InputDecoration(
-                        labelText: "Landmark",
-                        border: OutlineInputBorder(),
+                    Card(
+                      elevation: 10,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: roadnameController,
+                          decoration: InputDecoration(
+                            labelText: "Landmark",
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: _validateRoadName,
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),
-                    TextFormField(
-                      controller: cityController,
-                      decoration: InputDecoration(
-                        labelText: "Road Name or Area",
-                        border: OutlineInputBorder(),
+                    Card(
+                      elevation: 10,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: cityController,
+                          decoration: InputDecoration(
+                            labelText: "City",
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: _validateCity,
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),
-                    TextFormField(
-                      controller: stateController,
-                      decoration: InputDecoration(
-                        labelText: "State",
-                        border: OutlineInputBorder(),
+                    Card(
+                      elevation: 10,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: stateController,
+                          decoration: InputDecoration(
+                            labelText: "State",
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: _validateState,
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),
-                    TextFormField(
-                      controller: pinCodeController,
-                      decoration: InputDecoration(
-                        labelText: "Pincode",
-                        border: OutlineInputBorder(),
+                    Card(
+                      elevation: 10,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: pinCodeController,
+                          decoration: InputDecoration(
+                            labelText: "Pincode",
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: _validatePinCode,
+                        ),
                       ),
                     ),
                   ],
@@ -163,17 +244,21 @@ class _PaymentSampleState extends State<AddressPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 250),
+              SizedBox(height: 75),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // Process data.
+                      }
+                    },
                     child: Text("Payment"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white54,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       textStyle: TextStyle(fontSize: 16),
                     ),
                   ),

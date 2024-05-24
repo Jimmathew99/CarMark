@@ -1,8 +1,8 @@
-import 'package:carmark/view/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:carmark/view/payment_page.dart';
 
 class AddressPage extends StatefulWidget {
   final String? orderId;
@@ -21,8 +21,6 @@ class _AddressPageState extends State<AddressPage> {
 
   TextEditingController pinCodeController = TextEditingController();
   TextEditingController housenoController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController roadnameController = TextEditingController();
   TextEditingController stateController = TextEditingController();
@@ -154,6 +152,7 @@ class _AddressPageState extends State<AddressPage> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

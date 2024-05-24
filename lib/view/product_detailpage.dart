@@ -20,7 +20,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool _isBooked = false;
   bool _isFavorite = false;
   String? _userUid;
-  String? _orderId;  // Add this line
+  String? _orderId;
 
   @override
   void initState() {
@@ -75,14 +75,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: [
-            // Display product images in a carousel slider
             if (imageUrls.isNotEmpty)
               CarouselSlider(
                 options: CarouselOptions(
                   height: 200.0,
                   enlargeCenterPage: true,
                   autoPlay: true,
-                  aspectRatio: 16/9,
+                  aspectRatio: 16 / 9,
                   autoPlayCurve: Curves.fastOutSlowIn,
                   enableInfiniteScroll: true,
                   autoPlayAnimationDuration: Duration(milliseconds: 800),
@@ -102,7 +101,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
             SizedBox(height: 20),
 
-            // Display product details
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -194,7 +192,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AddressPage(orderId: _orderId),  // Pass orderId here
+                          builder: (context) => AddressPage(orderId: _orderId),
                         ),
                       );
                     }
@@ -215,6 +213,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   Future<void> placeOrderAndGetTotalAmount(
       Map<String, dynamic> productData, BuildContext context) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    }
+
     double price = double.parse(productData['price'].toString());
     double salesTax = 0.025;
     double totalAmount = price * (1 + salesTax);
@@ -235,18 +238,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         _showProductDetails = false;
       });
     } else {
-      final docRef = await orderCollection
-          .add({...productData, 'totalAmount': totalAmount});
+      final docRef = await orderCollection.add({
+        ...productData,
+        'totalAmount': totalAmount,
+        'userId': user.uid,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 
       setState(() {
         _totalAmount = totalAmount;
-        _orderId = docRef.id;  // Store orderId
+        _orderId = docRef.id;
+        _showProductDetails = true;
       });
 
       print('Product added to orders successfully!');
-      setState(() {
-        _showProductDetails = true;
-      });
     }
   }
 }

@@ -13,9 +13,9 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
-  final forgotkey = GlobalKey<FormState>();
-  var emailfController = TextEditingController();
-  var emailpattern = RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$');
+  final forgotKey = GlobalKey<FormState>();
+  var emailController = TextEditingController();
+  var emailPattern = RegExp(r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$');
   final EmailController _emailController = Get.put(EmailController());
 
   @override
@@ -24,7 +24,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Form(
-          key: forgotkey,
+          key: forgotKey,
           child: Column(
             children: [
               const Row(
@@ -45,9 +45,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: SizedBox(
                   height: 80.h,
                   width: 200.w,
-                  child: Text("Enter the email associated with your account."
-                      " A reset link will be "
-                      "sent to this email."),
+                  child: const Text("Enter the email associated with your account. A reset link will be sent to this email."),
                 ),
               ),
               SizedBox(
@@ -57,16 +55,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 elevation: 10,
                 child: TextFormField(
                   validator: (value) {
-                    {
-                      if (value!.isEmpty) {
-                        return ("Please enter email");
-                      } else if (!emailpattern.hasMatch(value)) {
-                        return 'Please enter valid email';
-                      }
-                      return null;
+                    if (value!.isEmpty) {
+                      return ("Please enter email");
+                    } else if (!emailPattern.hasMatch(value)) {
+                      return 'Please enter a valid email';
                     }
+                    return null;
                   },
-                  controller: emailfController,
+                  controller: emailController,
                   decoration: const InputDecoration(
                     label: Text("Email"),
                     prefixIcon: Icon(Icons.person),
@@ -80,22 +76,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   width: 270.w,
                   height: 40.h,
                   child: ElevatedButton(
-                      onPressed: () {
-                        if (forgotkey.currentState!.validate()) {
-                          String forgotEmail = emailfController.text.trim();
-
-                          if (forgotEmail.isEmpty) {
-                            Get.snackbar(
-                              "Error",
-                              "Please enter all details",
-                              snackPosition: SnackPosition.BOTTOM,
-                            );
-                          } else {
-                            _emailController.forgotPassword(forgotEmail);
-                          }
+                    onPressed: () {
+                      if (forgotKey.currentState!.validate()) {
+                        String forgotEmail = emailController.text.trim();
+                        if (forgotEmail.isNotEmpty) {
+                          _emailController.forgotPassword(forgotEmail);
+                        } else {
+                          Get.snackbar(
+                            "Error",
+                            "Please enter all details",
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
                         }
-                      },
-                      child: const Text("Submit")),
+                      }
+                    },
+                    child: const Text("Submit"),
+                  ),
                 ),
               ),
               Padding(
@@ -105,14 +101,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   children: [
                     const Text("Don't have an account?"),
                     TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const Signup(),
-                              ));
-                        },
-                        child: const Text("Sign up")),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Signup(),
+                          ),
+                        );
+                      },
+                      child: const Text("Sign up"),
+                    ),
                   ],
                 ),
               ),

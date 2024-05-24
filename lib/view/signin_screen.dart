@@ -186,10 +186,8 @@ class _SigninState extends State<Signin> {
                       SignInButton(
                           buttonType: ButtonType.google,
                           buttonSize: ButtonSize.medium, // small(default), medium, large
-                          onPressed: () {
-                            setState(() {
-                              googleController.signInWithGoogle();
-                            });
+                          onPressed: () async{
+                            await googleController.signInWithGoogle();
                           })
                     ],
                   ),

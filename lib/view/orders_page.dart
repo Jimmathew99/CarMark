@@ -39,35 +39,50 @@ class _OrdersPageState extends State<OrdersPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
                     elevation: 15,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Stack(
                       children: [
-                        Image.network(
-                          order['image1'] ?? '',
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Image.network(
+                              order['image1'] ?? '',
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(
+                                'Brand: ${order['brand']}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(
+                                'Model: ${order['model']}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(
+                                'Total Amount: \$${order['totalAmount'].toStringAsFixed(2)}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Text(
-                            'Brand: ${order['brand']}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Text(
-                            'Model: ${order['model']}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Text(
-                            'Total Amount: \$${order['totalAmount'].toStringAsFixed(2)}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18),
+                        Positioned(
+                          bottom: 5,
+                          right: 5,
+                          child: IconButton(
+                            onPressed: () {
+                              _removeOrder(orders[index].reference);
+                            },
+                            icon: Icon(Icons.delete),
+                            iconSize: 30,
                           ),
                         ),
                       ],
@@ -80,5 +95,26 @@ class _OrdersPageState extends State<OrdersPage> {
         },
       ),
     );
+  }
+
+  void _removeOrder(DocumentReference orderRef) {
+    orderRef.delete().then((_) {
+      // Order removed successfully
+      setState(() {
+        // Refresh the UI to reflect the changes
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Order removed successfully'),
+        ),
+      );
+    }).catchError((error) {
+      // Error occurred while removing order
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to remove order: $error'),
+        ),
+      );
+    });
   }
 }

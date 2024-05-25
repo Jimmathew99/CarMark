@@ -68,6 +68,7 @@ class EmailController extends GetxController {
     return querySnapshot.docs.isNotEmpty;
   }
 
+
   User? get currentUser => _auth.currentUser;
   String errorMessage = '';
 
@@ -93,28 +94,32 @@ class EmailController extends GetxController {
 
   Future<void> forgotPassword(String userEmail) async {
     try {
-      // Attempt to send the password reset email
-      await _auth.sendPasswordResetEmail(email: userEmail);
-      Get.snackbar(
-        "Request Sent Successfully",
-        "Password reset link sent to $userEmail",
-        snackPosition: SnackPosition.TOP,
-      );
-      Get.off(const WelcomeScreen(), transition: Transition.leftToRightWithFade);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
+      // Check if the email exists in Firestore
+      bool isEmailRegistered = await isEmailAlreadyRegistered(userEmail);
+
+      if (isEmailRegistered) {
+        // If the email exists, send the password reset email
+        await _auth.sendPasswordResetEmail(email: userEmail);
+        Get.snackbar(
+          "Request Sent Successfully",
+          "Password reset link sent to $userEmail",
+          snackPosition: SnackPosition.TOP,
+        );
+        Get.off(const WelcomeScreen(), transition: Transition.leftToRightWithFade);
+      } else {
+        // If the email doesn't exist, show an error message
         Get.snackbar(
           "Error",
           "No user found with this email",
           snackPosition: SnackPosition.TOP,
         );
-      } else {
-        Get.snackbar(
-          "Error",
-          e.message ?? "An error occurred",
-          snackPosition: SnackPosition.TOP,
-        );
       }
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar(
+        "Error",
+        e.message ?? "An error occurred",
+        snackPosition: SnackPosition.TOP,
+      );
     } catch (e) {
       Get.snackbar(
         "Error",
@@ -123,6 +128,7 @@ class EmailController extends GetxController {
       );
     }
   }
+
 
   Future<bool> isLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

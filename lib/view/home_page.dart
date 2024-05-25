@@ -4,6 +4,7 @@ import 'package:carmark/controller/image-controller.dart';
 import 'package:carmark/view/orders_page.dart';
 import 'package:carmark/view/product_detailpage.dart';
 import 'package:carmark/view/productlistpage.dart';
+import 'package:carmark/view/profile_screen.dart';
 import 'package:carmark/view/settings_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -156,9 +157,11 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: const EdgeInsets.all(2.0).r,
                   child: ListTile(
-                    title: Text("Address"),
+                    title: Text("Profile"),
                     leading: Icon(Icons.home_outlined),
                     onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(),));
+
 
                     },
                   ),

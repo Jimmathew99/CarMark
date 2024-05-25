@@ -16,14 +16,14 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   late final User user;
   late List<QueryDocumentSnapshot<Object?>> userData = [];
-  Map<String, dynamic>? addressData;
+  Future<Map<String, dynamic>?>? addressFuture;
 
   @override
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser!;
     _getUserData();
-    _getLatestOrder();
+    addressFuture = _getLatestOrder();
   }
 
   Future<void> _getUserData() async {
@@ -34,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _getLatestOrder() async {
+  Future<Map<String, dynamic>?> _getLatestOrder() async {
     QuerySnapshot ordersSnapshot = await FirebaseFirestore.instance
         .collection('orders')
         .where('userId', isEqualTo: user.uid)
@@ -45,14 +45,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (ordersSnapshot.docs.isNotEmpty) {
       DocumentSnapshot latestOrder = ordersSnapshot.docs.first;
       Map<String, dynamic>? orderData = latestOrder.data() as Map<String, dynamic>?;
-      setState(() {
-        if (orderData != null && orderData.containsKey('address')) {
-          addressData = orderData['address'];
-        }
-      });
+      if (orderData != null && orderData.containsKey('address')) {
+        return orderData['address'];
+      }
     }
+    return null;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -102,73 +100,91 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
 
               // Address Information
-              if (addressData != null) ...[
-                Padding(
-                  padding: const EdgeInsets.all(15.0).r,
-                  child: Card(
-                    elevation: 15,
-                    shape: OutlineInputBorder(),
-                    child: ListTile(
-                      title: Text(
-                        "House Number: ${addressData!['houseNo'] ?? 'N/A'}",
+              FutureBuilder<Map<String, dynamic>?>(
+                future: addressFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  if (snapshot.data == null) {
+                    return Center(child: Text('No address found.'));
+                  }
+                  Map<String, dynamic>? addressData = snapshot.data;
+
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(15.0).r,
+                        child: Card(
+                          elevation: 15,
+                          shape: OutlineInputBorder(),
+                          child: ListTile(
+                            title: Text(
+                              "House Number: ${addressData!['houseNo'] ?? 'N/A'}",
+                            ),
+                            leading: Icon(Icons.home),
+                          ),
+                        ),
                       ),
-                      leading: Icon(Icons.home),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0).r,
-                  child: Card(
-                    elevation: 15,
-                    shape: OutlineInputBorder(),
-                    child: ListTile(
-                      title: Text(
-                        "Landmark: ${addressData!['roadName'] ?? 'N/A'}",
+                      Padding(
+                        padding: const EdgeInsets.all(15.0).r,
+                        child: Card(
+                          elevation: 15,
+                          shape: OutlineInputBorder(),
+                          child: ListTile(
+                            title: Text(
+                              "Landmark: ${addressData['roadName'] ?? 'N/A'}",
+                            ),
+                            leading: Icon(Icons.location_on),
+                          ),
+                        ),
                       ),
-                      leading: Icon(Icons.location_on),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0).r,
-                  child: Card(
-                    elevation: 15,
-                    shape: OutlineInputBorder(),
-                    child: ListTile(
-                      title: Text(
-                        "City: ${addressData!['city'] ?? 'N/A'}",
+                      Padding(
+                        padding: const EdgeInsets.all(15.0).r,
+                        child: Card(
+                          elevation: 15,
+                          shape: OutlineInputBorder(),
+                          child: ListTile(
+                            title: Text(
+                              "City: ${addressData['city'] ?? 'N/A'}",
+                            ),
+                            leading: Icon(Icons.location_city),
+                          ),
+                        ),
                       ),
-                      leading: Icon(Icons.location_city),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0).r,
-                  child: Card(
-                    elevation: 15,
-                    shape: OutlineInputBorder(),
-                    child: ListTile(
-                      title: Text(
-                        "State: ${addressData!['state'] ?? 'N/A'}",
+                      Padding(
+                        padding: const EdgeInsets.all(15.0).r,
+                        child: Card(
+                          elevation: 15,
+                          shape: OutlineInputBorder(),
+                          child: ListTile(
+                            title: Text(
+                              "State: ${addressData['state'] ?? 'N/A'}",
+                            ),
+                            leading: Icon(Icons.map),
+                          ),
+                        ),
                       ),
-                      leading: Icon(Icons.map),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0).r,
-                  child: Card(
-                    elevation: 15,
-                    shape: OutlineInputBorder(),
-                    child: ListTile(
-                      title: Text(
-                        "Pincode: ${addressData!['pinCode'] ?? 'N/A'}",
+                      Padding(
+                        padding: const EdgeInsets.all(15.0).r,
+                        child: Card(
+                          elevation: 15,
+                          shape: OutlineInputBorder(),
+                          child: ListTile(
+                            title: Text(
+                              "Pincode: ${addressData['pinCode'] ?? 'N/A'}",
+                            ),
+                            leading: Icon(Icons.pin_drop),
+                          ),
+                        ),
                       ),
-                      leading: Icon(Icons.pin_drop),
-                    ),
-                  ),
-                ),
-              ],
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -90,26 +91,14 @@ class _AddressPageState extends State<AddressPage> {
   String? _validateHouseNumber(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your house number';
-    } else if (!RegExp(r'^[a-zA-Z0-9\s]+$').hasMatch(value)) {
-      return 'Please enter a valid house number';
     }
     return null;
   }
 
-  String? _validateRoadName(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter your road name or area';
-    } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-      return 'Please enter a valid road name';
-    }
-    return null;
-  }
 
   String? _validateCity(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your city';
-    } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-      return 'Please enter a valid city name';
     }
     return null;
   }
@@ -117,8 +106,6 @@ class _AddressPageState extends State<AddressPage> {
   String? _validateState(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your state';
-    } else if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-      return 'Please enter a valid state name';
     }
     return null;
   }
@@ -126,8 +113,6 @@ class _AddressPageState extends State<AddressPage> {
   String? _validatePinCode(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your pincode';
-    } else if (!RegExp(r'^[0-9]{5,6}$').hasMatch(value)) {
-      return 'Please enter a valid pincode';
     }
     return null;
   }
@@ -143,16 +128,32 @@ class _AddressPageState extends State<AddressPage> {
           'pinCode': pinCodeController.text,
         }
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Address saved successfully')),
-      );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => PaymentPage()),
-      );
+
+      // Fetch the total amount from the orders collection
+      DocumentSnapshot orderSnapshot = await FirebaseFirestore.instance.collection('orders').doc(widget.orderId).get();
+      if (orderSnapshot.exists) {
+        double totalAmount = orderSnapshot['totalAmount'];
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Address saved successfully')),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => PaymentPage(
+            userId: FirebaseAuth.instance.currentUser!.uid,
+            orderId: widget.orderId!,
+            houseNo: housenoController.text,
+            roadName: roadnameController.text,
+            city: cityController.text,
+            state: stateController.text,
+            pinCode: pinCodeController.text,
+            totalAmount: totalAmount,  // Pass the total amount to the PaymentPage
+          )),
+        );
+      }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -168,94 +169,80 @@ class _AddressPageState extends State<AddressPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (_address != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: Text(
-                    _address!,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(vertical: 10.0),
+              //   child: Text(
+              //     _address!,
+              //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Card(
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            controller: housenoController,
+                            decoration: InputDecoration(
+                              labelText: "House Number",
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: _validateHouseNumber,
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+                      Card(
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            controller: cityController,
+                            decoration: InputDecoration(
+                              labelText: "City",
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: _validateCity,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Card(
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            controller: stateController,
+                            decoration: InputDecoration(
+                              labelText: "State",
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: _validateState,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Card(
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            controller: pinCodeController,
+                            decoration: InputDecoration(
+                              labelText: "Pincode",
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: _validatePinCode,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    Card(
-                      elevation: 10,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: housenoController,
-                          decoration: InputDecoration(
-                            labelText: "House Number",
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: _validateHouseNumber,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Card(
-                      elevation: 10,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: roadnameController,
-                          decoration: InputDecoration(
-                            labelText: "Landmark",
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: _validateRoadName,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Card(
-                      elevation: 10,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: cityController,
-                          decoration: InputDecoration(
-                            labelText: "City",
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: _validateCity,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Card(
-                      elevation: 10,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: stateController,
-                          decoration: InputDecoration(
-                            labelText: "State",
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: _validateState,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Card(
-                      elevation: 10,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: pinCodeController,
-                          decoration: InputDecoration(
-                            labelText: "Pincode",
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: _validatePinCode,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               SizedBox(height: 20),
               Center(
                 child: ElevatedButton(

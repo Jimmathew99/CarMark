@@ -95,7 +95,6 @@ class _AddressPageState extends State<AddressPage> {
     return null;
   }
 
-
   String? _validateCity(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your city';
@@ -129,10 +128,13 @@ class _AddressPageState extends State<AddressPage> {
         }
       });
 
-      // Fetch the total amount from the orders collection
+      // Fetch the total amount and other required fields from the orders collection
       DocumentSnapshot orderSnapshot = await FirebaseFirestore.instance.collection('orders').doc(widget.orderId).get();
       if (orderSnapshot.exists) {
         double totalAmount = orderSnapshot['totalAmount'];
+        String brand = orderSnapshot['brand'];
+        String model = orderSnapshot['model'];
+        String image1 = orderSnapshot['image1'];
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Address saved successfully')),
@@ -143,12 +145,10 @@ class _AddressPageState extends State<AddressPage> {
           MaterialPageRoute(builder: (context) => PaymentPage(
             userId: FirebaseAuth.instance.currentUser!.uid,
             orderId: widget.orderId!,
-            houseNo: housenoController.text,
-            roadName: roadnameController.text,
-            city: cityController.text,
-            state: stateController.text,
-            pinCode: pinCodeController.text,
-            totalAmount: totalAmount,  // Pass the total amount to the PaymentPage
+            totalAmount: totalAmount,
+            brand: brand,
+            model: model,
+            image1: image1,
           )),
         );
       }

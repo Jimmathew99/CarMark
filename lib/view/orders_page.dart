@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'payment_page.dart'; // Import PaymentPage
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({Key? key}) : super(key: key);
@@ -19,22 +20,19 @@ class _OrdersPageState extends State<OrdersPage> {
         future: FirebaseFirestore.instance.collection('orders').get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // While data is loading
             return Center(
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
-            // If there's an error
             return Center(
               child: Text('Error: ${snapshot.error}'),
             );
           } else {
-            final orders = snapshot.data!.docs; // List of QueryDocumentSnapshot
+            final orders = snapshot.data!.docs;
             return ListView.builder(
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final order = orders[index].data() as Map<String, dynamic>;
-                // Build your order card widget here
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Card(
@@ -77,12 +75,35 @@ class _OrdersPageState extends State<OrdersPage> {
                         Positioned(
                           bottom: 5,
                           right: 5,
-                          child: IconButton(
-                            onPressed: () {
-                              _removeOrder(orders[index].reference);
-                            },
-                            icon: Icon(Icons.delete),
-                            iconSize: 30,
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  _removeOrder(orders[index].reference);
+                                },
+                                icon: Icon(Icons.delete),
+                                iconSize: 30,
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PaymentPage(
+                                        orderId: orders[index].id,
+                                        image1: order['image1'] ?? '',
+                                        brand: order['brand'] ?? '',
+                                        model: order['model'] ?? '',
+                                        totalAmount: order['totalAmount'] ?? 0.0,
+                                        userId: order['userId'] ?? '',
+                                      ),
+                                    ),
+                                  );
+                                },
+                                icon: Icon(Icons.payment),
+                                iconSize: 30,
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -99,17 +120,13 @@ class _OrdersPageState extends State<OrdersPage> {
 
   void _removeOrder(DocumentReference orderRef) {
     orderRef.delete().then((_) {
-      // Order removed successfully
-      setState(() {
-        // Refresh the UI to reflect the changes
-      });
+      setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Order removed successfully'),
         ),
       );
     }).catchError((error) {
-      // Error occurred while removing order
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to remove order: $error'),

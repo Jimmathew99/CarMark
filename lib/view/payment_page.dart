@@ -6,24 +6,20 @@ import '../controller/RazorPayCredentials.dart';
 
 class PaymentPage extends StatefulWidget {
   final String orderId;
-  final String houseNo;
-  final String roadName;
-  final String city;
-  final String state;
-  final String pinCode;
+  final String image1;
+  final String brand;
+  final String model;
   final double totalAmount;
-  final String userId; // Added userId field
+  final String userId;
 
   const PaymentPage({
     Key? key,
     required this.orderId,
-    required this.houseNo,
-    required this.roadName,
-    required this.city,
-    required this.state,
-    required this.pinCode,
+    required this.image1,
+    required this.brand,
+    required this.model,
     required this.totalAmount,
-    required this.userId, // Added userId parameter
+    required this.userId,
   }) : super(key: key);
 
   @override
@@ -32,18 +28,14 @@ class PaymentPage extends StatefulWidget {
 
 class _PaymentPageState extends State<PaymentPage> {
   late Razorpay _razorpay;
-  TextEditingController amtController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? userEmail;
   String? userPhone;
 
   Future<void> fetchUserDetails() async {
     try {
-      // Query Firestore for user details using userId
       DocumentSnapshot userSnapshot =
       await FirebaseFirestore.instance.collection('users').doc(widget.userId).get();
-
-      // Extract email and phone number from the user document
       setState(() {
         userEmail = userSnapshot['email'];
         userPhone = userSnapshot['phoneNumber'];
@@ -71,21 +63,20 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void openCheckOut() async {
-    const double usdToInrRate = 75.0; // Replace with actual exchange rate or API call
+    const double usdToInrRate = 75.0;
 
-    // Convert totalAmount from USD to INR
-    int amountInPaise = (widget.totalAmount * usdToInrRate * 100).toInt(); // Amount in paise
-    double twentyPercent = amountInPaise *20/100;
+    int amountInPaise = (widget.totalAmount * usdToInrRate * 100).toInt();
+
     var options = {
       'key': RazorPayCredentials.keyId,
-      'amount': amountInPaise, // Amount in paise
+      'amount': amountInPaise,
       'currency': 'INR',
       'name': 'Jim Mathew',
       'description': 'Description for order',
       'timeout': 60,
       'prefill': {
-        'contact': userPhone ?? '', // Use userPhone fetched from Firestore
-        'email': userEmail ?? '', // Use userEmail fetched from Firestore
+        'contact': userPhone ?? '',
+        'email': userEmail ?? '',
       },
       'external': {
         'wallets': ['paytm']
@@ -124,23 +115,32 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('RazorPay Integration'),
+        title: Text('Payment Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Image.network(widget.image1, height: 200, width: double.infinity, fit: BoxFit.cover),
+              SizedBox(height: 8),
+              Text('Brand: ${widget.brand}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text('Model: ${widget.model}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text('Total Amount: \$${widget.totalAmount.toStringAsFixed(2)}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    openCheckOut();
-                  }
-                },
-                child: Text('Pay Now'),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      openCheckOut();
+                    }
+                  },
+                  child: Text('Pay Now'),
+                ),
               ),
             ],
           ),

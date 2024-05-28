@@ -25,9 +25,11 @@ class EmailController extends GetxController {
 
   Future<void> signupUser(String email, String password, String name) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      // Check if the email is already registered
       bool isEmailRegistered = await isEmailAlreadyRegistered(email);
       if (!isEmailRegistered) {
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+
         String newName = name.split(' ')
             .map((word) => word.substring(0, 1).toUpperCase() + word.substring(1))
             .join(' ');
@@ -45,18 +47,20 @@ class EmailController extends GetxController {
           userAddress: 'NA',
           createdOn: DateTime.now(),
         );
+
         try {
           await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set(userModel.toMap());
         } catch (e) {
           print("Error saving user data: $e");
         }
       } else {
-        print("Email already registered!");
+        Get.snackbar('Error', 'The email address is already registered.');
       }
     } catch (e) {
       Get.snackbar('Error', e.toString());
     }
   }
+
 
   Future<bool> isEmailAlreadyRegistered(String email) async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance

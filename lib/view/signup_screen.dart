@@ -24,7 +24,7 @@ class _SignupState extends State<Signup> {
   var namepattern = RegExp(r'^[a-zA-Z]+ [a-zA-Z]+$');
   var passpattern = RegExp(
       r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~])[a-zA-Z\d!@#$%^&*()_+{}\[\]:;<>,.?~]{8,12}$');
-  final GoogleController _googleSignInController = Get.put(GoogleController());
+
   final EmailController _emailPassController = Get.put(EmailController());
 
   @override

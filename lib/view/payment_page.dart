@@ -125,13 +125,13 @@ class _PaymentPageState extends State<PaymentPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.network(widget.image1, height: 200, width: double.infinity, fit: BoxFit.cover),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('Brand: ${widget.brand}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('Model: ${widget.model}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('Total Amount: \$${widget.totalAmount.toStringAsFixed(2)}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -139,7 +139,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       openCheckOut();
                     }
                   },
-                  child: Text('Pay Now'),
+                  child: const Text('Pay Now'),
                 ),
               ),
             ],

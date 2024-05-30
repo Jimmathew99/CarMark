@@ -14,13 +14,13 @@ class _OrdersPageState extends State<OrdersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Orders'),
+        title: const Text('Orders'),
       ),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance.collection('orders').get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
@@ -50,7 +50,7 @@ class _OrdersPageState extends State<OrdersPage> {
                               padding: const EdgeInsets.all(5.0),
                               child: Text(
                                 'Brand: ${order['brand']}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                             ),
@@ -58,7 +58,7 @@ class _OrdersPageState extends State<OrdersPage> {
                               padding: const EdgeInsets.all(5.0),
                               child: Text(
                                 'Model: ${order['model']}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                             ),
@@ -66,7 +66,7 @@ class _OrdersPageState extends State<OrdersPage> {
                               padding: const EdgeInsets.all(5.0),
                               child: Text(
                                 'Total Amount: \$${order['totalAmount'].toStringAsFixed(2)}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                             ),

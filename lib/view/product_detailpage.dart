@@ -69,7 +69,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Details'),
+        title: const Text('Product Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -97,7 +97,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 )).toList(),
               )
             else
-              Text('No images available'),
+              const Text('No images available'),
 
             SizedBox(height: 20),
 
@@ -197,7 +197,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       );
                     }
                         : null,
-                    child: Text(
+                    child: const Text(
                       'Address',
                       style: TextStyle(color: Colors.white),
                     ),
@@ -276,7 +276,7 @@ class ProductDetailsCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
+              const Center(
                 child: Text(
                   "Invoice",
                   style: TextStyle(
@@ -286,7 +286,7 @@ class ProductDetailsCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              Text(
+              const Text(
                 "CarMark",
                 style: TextStyle(
                     color: Colors.black,
@@ -297,17 +297,17 @@ class ProductDetailsCard extends StatelessWidget {
                 'Brand/Model : ${productData['brand'] ?? ''} ${productData['model'] ?? ''}',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 'Price: \$${productData['price'] ?? ''}',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 'Sales Tax: 2.5%',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text('Total Amount: \$${totalAmount.toStringAsFixed(2)}'),
             ],
           ),

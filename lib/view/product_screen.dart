@@ -15,7 +15,7 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Products"),
+        title: const Text("Products"),
         centerTitle: true,
 
       ),
@@ -23,16 +23,16 @@ class _ProductScreenState extends State<ProductScreen> {
         stream: FirebaseFirestore.instance.collection('products').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No products found.'));
+            return const Center(child: Text('No products found.'));
           }
           return GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 5.0,
               mainAxisSpacing: 5.0,
